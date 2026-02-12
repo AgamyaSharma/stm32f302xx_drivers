@@ -30,3 +30,27 @@
 *.exe
 *.out
 *.app
+
+
+
+# IDE Project files
+.project
+.cproject
+.mxproject
+.settings/
+
+# Build Artifacts
+Debug/
+Release/
+bin/
+obj/
+*.elf
+*.bin
+*.map
+*.hex
+*.o
+*.d
+
+# Linker Scripts 
+*.ld
+*.launch
