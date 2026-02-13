@@ -1,13 +1,12 @@
 /*
  * stm32f302xx.h
  *
- *  Created on: Feb 12, 2026
- *      Author: Dell
+ *
  */
 
 #ifndef INC_STM32F302XX_H_
 #define INC_STM32F302XX_H_
-
+#include <stdint.h>
 /*
  *  base addresses of Flash and SRAM memories
  */
@@ -87,5 +86,72 @@
 #define TIM15_BASE_ADDR						(APB2PERIPH_BASE_ADDR + 0x4000U)
 #define TIM16_BASE_ADDR						(APB2PERIPH_BASE_ADDR + 0x4400U)
 #define TIM17_BASE_ADDR						(APB2PERIPH_BASE_ADDR + 0x4800U)
+/*
+ *
+ */
+typedef struct {
+	volatile uint32_t RC;
+	volatile uint32_t CFGR;
+	volatile uint32_t CIR;
+	volatile uint32_t APB2RSTR;
+	volatile uint32_t APB1RSTR;
+	volatile uint32_t AHBENR;
+	volatile uint32_t APB2ENR;
+	volatile uint32_t APB1ENR;
+	volatile uint32_t BDCR;
+	volatile uint32_t CSR;
+	volatile uint32_t AHBRSTR;
+	volatile uint32_t CFGR2;
+	volatile uint32_t CFGR3;
+}RCC_RegDef_t;
+
+#define RCC ((RCC_RegDef_t*)RCC_BASE_ADDR)
+/*
+ *
+ */
+typedef struct {
+	volatile uint32_t MODER;								/* GPIO General structure */
+	volatile uint32_t OTYPEPR;
+	volatile uint32_t OSPEEDR;
+	volatile uint32_t PUPDR;
+	volatile uint32_t IDR;
+	volatile uint32_t ODR;
+	volatile uint32_t BSRR;
+	volatile uint32_t LCKR;
+	volatile uint32_t AFRL;
+	volatile uint32_t AFHR;
+	volatile uint32_t BRR;
+}GPIO_RegDef_t;
+
+
+/*
+ *
+ */
+#define GPIOA 								((GPIO_RegDef_t*)GPIOA_BASE_ADDR)
+#define GPIOB 								((GPIO_RegDef_t*)GPIOB_BASE_ADDR)
+#define GPIOC								((GPIO_RegDef_t*)GPIOC_BASE_ADDR)
+#define GPIOD								((GPIO_RegDef_t*)GPIOD_BASE_ADDR)
+#define GPIOF								((GPIO_RegDef_t*)GPIOF_BASE_ADDR)
+
+#define GPIOA_PCLK_EN()						(RCC->AHBENR |= (1<<17))
+#define GPIOB_PCLK_EN()						(RCC->AHBENR |= (1<<18))
+#define GPIOC_PCLK_EN()						(RCC->AHBENR |= (1<<19))
+#define GPIOD_PCLK_EN()						(RCC->AHBENR |= (1<<20))
+#define GPIOF_PCLK_EN()						(RCC->AHBENR |= (1<<22))
+
+#define GPIOA_PCLK_DI()						(RCC->AHBENR &= ~(1<<17))
+#define GPIOB_PCLK_DI()						(RCC->AHBENR &= ~(1<<18))
+#define GPIOC_PCLK_DI()						(RCC->AHBENR &= ~(1<<19))
+#define GPIOD_PCLK_DI()						(RCC->AHBENR &= ~(1<<20))
+#define GPIOF_PCLK_DI()						(RCC->AHBENR &= ~(1<<22))
+
+
+
+#define ENABLE 								1
+#define DISABLE 							0
+
+#define SET ENABLE
+#define RESET DISABLE
+
 
 #endif /* INC_STM32F302XX_H_ */
