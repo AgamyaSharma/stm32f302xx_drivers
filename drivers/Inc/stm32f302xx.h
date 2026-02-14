@@ -111,7 +111,7 @@ typedef struct {
  */
 typedef struct {
 	volatile uint32_t MODER;								/* GPIO General structure */
-	volatile uint32_t OTYPEPR;
+	volatile uint32_t OTYPER;
 	volatile uint32_t OSPEEDR;
 	volatile uint32_t PUPDR;
 	volatile uint32_t IDR;
@@ -150,8 +150,9 @@ typedef struct {
 #define ENABLE 								1
 #define DISABLE 							0
 
-#define SET ENABLE
-#define RESET DISABLE
+#define SET 								ENABLE
+#define RESET 								DISABLE
 
-
+#define GPIO_PIN_SET						SET
+#define GPIO_PIN_RESET						RESET
 #endif /* INC_STM32F302XX_H_ */

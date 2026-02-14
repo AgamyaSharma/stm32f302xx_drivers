@@ -54,3 +54,6 @@ obj/
 # Linker Scripts 
 *.ld
 *.launch
+Startup/startup_stm32f302r8tx.s
+Src/syscalls.c
+Src/sysmem.c
