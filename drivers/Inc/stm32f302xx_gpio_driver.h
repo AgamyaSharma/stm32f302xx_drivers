@@ -53,7 +53,19 @@ typedef struct{
 
 #define GPIO_OP_SPEED_LOW								0
 #define GPIO_OP_SPEED_MED								1
-#define GPIO_OP_SPEED_HIGH								2
+#define GPIO_OP_SPEED_HIGH								3
+
+#define GPIO_MAX_PIN_NUMBER								15
+#define IS_GPIO_PIN_NUMBER(PIN)							((PIN) <= GPIO_MAX_PIN_NUMBER)
+
+#define IS_GPIO_PINMODE(MODE)							((MODE) <= GPIO_PINMODE_ANALOG)
+
+#define IS_GPIO_PUPD_CONTROL(PUPD)						((PUPD) <= GPIO_PIN_PD)
+
+#define IS_GPIO_OP_TYPE(OPTYPE)							((OPTYPE) <= GPIO_OP_TYPE_OP)
+
+#define IS_GPIO_OP_SPEED(SPEED)							((SPEED) <= GPIO_OP_SPEED_HIGH)
+
 
 
 

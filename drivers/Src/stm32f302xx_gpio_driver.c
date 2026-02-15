@@ -44,21 +44,58 @@ void GPIO_PeriClockControl(GPIO_RegDef_t *pGPIOx, uint8_t EnorDi){
 	}
 }
 void GPIO_Innit(GPIO_Handle_t *pGPIOHandle){
-	if((pGPIOHandle->GPIO_PinConfig.GPIO_PinMode) <= GPIO_PINMODE_ANALOG){
-		temp = ((pGPIOHandle->GPIO_PinConfig.GPIO_PinMode) << (2* (pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber)));
-		pGPIOHandle->pGPIOx->MODER |= temp;
-		temp = 0;
+	uint32_t temp =0;
+
+	if(!IS_GPIO_PIN_NUMBER(pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber) ){
+
+		return;
 	}
-	if((pGPIOHandle->GPIO_PinConfig.GPIO_PinMode) <= GPIO_OP_SPEED_HIGH){
-		temp =((pGPIOHandle->GPIO_PinConfig.GPIO_PinSpeed) << (2* (pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber)));  //TODO: Add the rest of the innit logic and the documentation for each functions
-		pGPIOHandle->pGPIOx->OSPEEDR |= temp;
-		temp = 0;
+
+	if(!IS_GPIO_PINMODE(pGPIOHandle->GPIO_PinConfig.GPIO_PinMode)){
+
+		return;
 	}
-	if((pGPIOHandle->GPIO_PinConfig.GPIO_PinOPType) <= GPIO_OP_TYPE_OP ){
-		temp =((pGPIOHandle->GPIO_PinConfig.GPIO_PinOPType) <<  (pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber));
-		pGPIOHandle->pGPIOx->OTYPER |= temp;
-        temp = 0;
+
+	if(!IS_GPIO_OP_SPEED(pGPIOHandle->GPIO_PinConfig.GPIO_PinSpeed)){
+
+		return;
 	}
+
+	if(!IS_GPIO_OP_TYPE(pGPIOHandle->GPIO_PinConfig.GPIO_PinOPType) ){
+
+		return;
+	}
+
+	if(!IS_GPIO_PUPD_CONTROL(pGPIOHandle->GPIO_PinConfig.GPIO_PinPuPdControl) ){
+		return;
+	}
+	if(pGPIOHandle->GPIO_PinConfig.GPIO_PinMode <= GPIO_PINMODE_ANALOG){
+
+	temp = ((pGPIOHandle->GPIO_PinConfig.GPIO_PinMode) << (2* (pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber)));
+	pGPIOHandle->pGPIOx->MODER &= (0x3 << (2* (pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber)));
+	pGPIOHandle->pGPIOx->MODER |= temp;
+	}else {
+		//interrupts later
+	}
+
+	temp =((pGPIOHandle->GPIO_PinConfig.GPIO_PinOPType) <<  (pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber));
+	pGPIOHandle->pGPIOx->OTYPER &= ~(1 <<  (pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber));
+	pGPIOHandle->pGPIOx->OTYPER |= temp;
+
+
+    temp =((pGPIOHandle->GPIO_PinConfig.GPIO_PinSpeed) <<  (2* (pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber)));
+    pGPIOHandle->pGPIOx->OSPEEDR &= ~(0x3 << (2* (pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber)));
+    pGPIOHandle->pGPIOx->OSPEEDR |= temp;
+
+    temp = ((pGPIOHandle->GPIO_PinConfig.GPIO_PinPuPdControl) << (2* (pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber)));
+    pGPIOHandle->pGPIOx->PUPDR &= ~(0x3 << (2* (pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber)));
+    pGPIOHandle->pGPIOx->PUPDR |= temp;
+
+    if(pGPIOHandle->GPIO_PinConfig.GPIO_PinMode == GPIO_PINMODE_ALTFN){
+
+    }
+
+
 }
 void GPIO_DeInnit(GPIO_RegDef_t *pGPIOx){
 
