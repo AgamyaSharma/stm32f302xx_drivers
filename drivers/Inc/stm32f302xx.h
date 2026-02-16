@@ -90,7 +90,7 @@
  *
  */
 typedef struct {
-	volatile uint32_t RC;
+	volatile uint32_t CR;
 	volatile uint32_t CFGR;
 	volatile uint32_t CIR;
 	volatile uint32_t APB2RSTR;
@@ -118,8 +118,7 @@ typedef struct {
 	volatile uint32_t ODR;
 	volatile uint32_t BSRR;
 	volatile uint32_t LCKR;
-	volatile uint32_t AFRL;
-	volatile uint32_t AFHR;
+	volatile uint32_t AFR[2];
 	volatile uint32_t BRR;
 }GPIO_RegDef_t;
 
@@ -144,6 +143,14 @@ typedef struct {
 #define GPIOC_PCLK_DI()						(RCC->AHBENR &= ~(1<<19))
 #define GPIOD_PCLK_DI()						(RCC->AHBENR &= ~(1<<20))
 #define GPIOF_PCLK_DI()						(RCC->AHBENR &= ~(1<<22))
+
+#define GPIOA_REG_RESET()					do{(RCC->AHBRSTR |= (1<<17)); (RCC->AHBENR &= ~(1<<17));}while(0)
+#define GPIOB_REG_RESET()					do{(RCC->AHBRSTR |= (1<<18)); (RCC->AHBENR &= ~(1<<18));}while(0)
+#define GPIOC_REG_RESET()					do{(RCC->AHBRSTR |= (1<<19)); (RCC->AHBENR &= ~(1<<19));}while(0)
+#define GPIOD_REG_RESET()					do{(RCC->AHBRSTR |= (1<<20)); (RCC->AHBENR &= ~(1<<20));}while(0)
+#define GPIOF_REG_RESET()					do{(RCC->AHBRSTR |= (1<<22)); (RCC->AHBENR &= ~(1<<22));}while(0)
+
+
 
 
 

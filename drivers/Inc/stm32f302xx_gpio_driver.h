@@ -39,6 +39,11 @@ typedef struct{
 #define GPIO_PINMODE_OUTPUT								1
 #define GPIO_PINMODE_ALTFN								2
 #define GPIO_PINMODE_ANALOG								3
+#define GPIO_PINMODE_IT_FT								4
+#define GPIO_PINMODE_IT_RT								5
+#define GPIO_PINMODE_IT_RFT								6
+
+
 /*
  * space for interrupts later
  */
