@@ -75,7 +75,26 @@ void GPIO_Innit(GPIO_Handle_t *pGPIOHandle){
 	pGPIOHandle->pGPIOx->MODER &= ~(0x3 << (2* (pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber)));
 	pGPIOHandle->pGPIOx->MODER |= temp;
 	}else {
-		//interrupts later
+		if(pGPIOHandle->GPIO_PinConfig.GPIO_PinMode == GPIO_PINMODE_IT_FT){
+			EXTI->FTSR1 |= (1<<pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber);
+		}
+
+		if(pGPIOHandle->GPIO_PinConfig.GPIO_PinMode == GPIO_PINMODE_IT_RT){
+			EXTI->RTSR1 |= (1<<pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber);
+
+				}
+
+		if(pGPIOHandle->GPIO_PinConfig.GPIO_PinMode == GPIO_PINMODE_IT_RFT){
+			EXTI->FTSR1 |= (1<<pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber);
+			EXTI->RTSR1 |= (1<<pGPIOHandle->GPIO_PinConfig.GPIO_PinMode);
+				}
+
+		EXTI->IMR1 |= (1<<pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber);
+		uint8_t temp1 =((pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber)/4);
+		uint8_t temp2 =((pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber)%4);
+		SYSFCFG_PCLK_EN();
+		SYSCFG->EXTICR[temp1] = ((GPIO_BASE_ADDR_TO_CODE(pGPIOHandle->pGPIOx)) << (temp2 * 4));
+
 	}
 
 	temp =((pGPIOHandle->GPIO_PinConfig.GPIO_PinOPType) <<  (pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber));
@@ -152,6 +171,7 @@ void GPIO_ToggleOutputPin(GPIO_RegDef_t *pGPIOx, uint8_t PinNumber){
 
 }
 void GPIO_IRQConfig(uint8_t IRQNumber, uint8_t IRQPriority, uint8_t EnorDi){
+
 
 }
 void GPIO_IRQHandle(uint8_t PinNumber){
