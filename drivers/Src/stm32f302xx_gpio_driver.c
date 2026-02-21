@@ -170,10 +170,56 @@ void GPIO_ToggleOutputPin(GPIO_RegDef_t *pGPIOx, uint8_t PinNumber){
 	pGPIOx->ODR ^= (1<<PinNumber);
 
 }
-void GPIO_IRQConfig(uint8_t IRQNumber, uint8_t IRQPriority, uint8_t EnorDi){
+void GPIO_IRQConfig(uint8_t IRQNumber, uint8_t EnorDi){
+	if(EnorDi== Enable){
+		if(IRQNumber <=31){
 
+			NVIC->ISER[0] |= (1<< IRQNUMBER);
+
+		}else if(IRQNumber > 31 && IRQNUMBERS <=63){
+
+			NVIC->ISER[1] |= (1<< IRQNUMBER % 32);
+
+		}else if(IRQNumber > 63 && IRQNUMBER <=95){
+
+			NVIC->ISER[2] |= (1<< (IRQNUMBER % 64));
+
+		}
+
+	}else {
+		if(IRQNumber <=31){
+
+			NVIC->ICER[0] |= (1<<IRQNumber);
+		}else if(IRQNumber > 31 && IRQNUMBERS <=63){
+
+			NVIC->ICER[1] |= (1<<(IRQNumber % 32));
+		}else if(IRQNumber > 63 && IRQNUMBER <=95){
+
+			NVIC->ICER[2] |= (1<<(IRQNumber % 64));
+
+		}
+
+	}
 
 }
-void GPIO_IRQHandle(uint8_t PinNumber){
 
+void GPIO_PriorityConfig(uint8_t IRQPriority,uint8_t IRQNumber){
+	uint8_t iprx = (IRQNumber / 4);
+	uint8_t iprxSection = (IRQNumber % 4);
+	uint8_t shiftAmount =((8*iprxSection) + 4);
+	NVIC->IPR[iprx] |= (IRQPriority << (shiftAmount));
+}
+void GPIO_IRQHandle(uint8_t PinNumber){
+	if (PinNumber < 32) {
+	        // Handle Lines 0 to 31 in PR1
+		if (EXTI->PR1 & (1 << PinNumber)) {
+			EXTI->PR1 |= (1 << PinNumber);
+	        }
+	    } else {
+	        // Handle Lines 32 and above in PR2
+	        // We subtract 32 so that Line 32 becomes bit 0, Line 33 becomes bit 1, etc.
+	        if (EXTI->PR2 & (1 << (PinNumber - 32))) {
+	            EXTI->PR2 |= (1 << (PinNumber - 32));
+	        }
+	    }
 }

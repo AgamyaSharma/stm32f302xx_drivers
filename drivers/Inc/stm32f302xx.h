@@ -89,6 +89,9 @@
 /*
  *
  */
+#define NVIC_BASE_ADDR       				0xE000E100U
+
+
 typedef struct {
 	volatile uint32_t CR;
 	volatile uint32_t CFGR;
@@ -145,6 +148,20 @@ typedef struct{
 	volatile uint32_t CFGR2;
 
 }SYSCFG_RegDef_t;
+
+typedef struct {
+    volatile uint32_t ISER[8];
+    uint32_t RESERVED0[24];
+    volatile uint32_t ICER[8];
+    uint32_t RESERVED1[24];
+    volatile uint32_t ISPR[8];
+    uint32_t RESERVED2[24];
+    volatile uint32_t ICPR[8];
+    uint32_t RESERVED3[24];
+    volatile uint32_t IABR[8];
+    uint32_t RESERVED4[56];
+    volatile uint8_t  IPR[240];
+} NVIC_RegDef_t;
 /*
  *
  */
@@ -185,6 +202,17 @@ typedef struct{
 #define EXTI								((EXTI_RegDef_t*)EXTI_BASE_ADDR)
 
 #define SYSCFG								((SYSCFG_RegDef_t*)SYSCFG_BASE_ADDR)
+
+#define IRQ_NUMBER_EXTI0					6
+#define IRQ_NUMBER_EXTI1					7
+#define IRQ_NUMBER_EXTI2					8
+#define IRQ_NUMBER_EXTI3					9
+#define IRQ_NUMBER_EXTI4					10
+#define IRQ_NUMBER_EXTI9_5      			23
+#define IRQ_NUMBER_EXTI15_10    			40
+
+#define NVIC								((NVIC_RegDef_t*)NVIC_BASE_ADDR)
+
 
 
 #define ENABLE 								1
