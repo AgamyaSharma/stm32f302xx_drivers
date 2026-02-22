@@ -149,6 +149,18 @@ typedef struct{
 
 }SYSCFG_RegDef_t;
 
+typedef struct{
+	uint32_t CR1;
+	uint32_t CR2;
+	uint32_t SR;
+	uint32_t DR;
+	uint32_t CRCPR;
+	uint32_t RXCRCR;
+	uint32_t TXCRCR;
+	uint32_t I2SCFGR;
+	uint32_t I2CPR;
+}SPI_RegDef_t;
+
 typedef struct {
     volatile uint32_t ISER[8];
     uint32_t RESERVED0[24];
@@ -177,7 +189,11 @@ typedef struct {
 #define GPIOD_PCLK_EN()						(RCC->AHBENR |= (1<<20))
 #define GPIOF_PCLK_EN()						(RCC->AHBENR |= (1<<22))
 
-#define SYSFCFG_PCLK_EN()                   (RCC->APB2ENR |= (1));
+#define SYSFCFG_PCLK_EN()                   (RCC->APB2ENR |= (1))
+
+#define SPI2_PCLK_ENABLE()					(RCC->APB1 |= (1<<14))
+#define SPI3_PCLK_ENABLE()					(RCC->APB1 |= (1<<15))
+
 
 #define GPIOA_PCLK_DI()						(RCC->AHBENR &= ~(1<<17))
 #define GPIOB_PCLK_DI()						(RCC->AHBENR &= ~(1<<18))
@@ -190,6 +206,9 @@ typedef struct {
 #define GPIOC_REG_RESET()					do{(RCC->AHBRSTR |= (1<<19)); (RCC->AHBENR &= ~(1<<19));}while(0)
 #define GPIOD_REG_RESET()					do{(RCC->AHBRSTR |= (1<<20)); (RCC->AHBENR &= ~(1<<20));}while(0)
 #define GPIOF_REG_RESET()					do{(RCC->AHBRSTR |= (1<<22)); (RCC->AHBENR &= ~(1<<22));}while(0)
+
+#define SPI2_PCLK_ENABLE()					(RCC->APB1 &= ~(1<<14))
+#define SPI3_PCLK_ENABLE()					(RCC->APB1 &= ~(1<<15))
 
 #define GPIO_BASE_ADDR_TO_CODE(x)			((x == GPIOA)?0:\
 		                                    (x == GPIOB)?1:\
@@ -212,6 +231,9 @@ typedef struct {
 #define IRQ_NUMBER_EXTI15_10    			40
 
 #define NVIC								((NVIC_RegDef_t*)NVIC_BASE_ADDR)
+
+#define SPI2								((SPI_RegDef_t*)SPI2_BASE_ADDR)
+#define SPI3								((SPI_RegDef_t*)SPI3_BASE_ADDR)
 
 
 
