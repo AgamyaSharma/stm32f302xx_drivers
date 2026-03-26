@@ -191,8 +191,8 @@ typedef struct {
 
 #define SYSFCFG_PCLK_EN()                   (RCC->APB2ENR |= (1))
 
-#define SPI2_PCLK_ENABLE()					(RCC->APB1 |= (1<<14))
-#define SPI3_PCLK_ENABLE()					(RCC->APB1 |= (1<<15))
+#define SPI2_PCLK_ENABLE()					(RCC->APB1ENR |= (1<<14))
+#define SPI3_PCLK_ENABLE()					(RCC->APB1ENR |= (1<<15))
 
 
 #define GPIOA_PCLK_DI()						(RCC->AHBENR &= ~(1<<17))
@@ -207,8 +207,8 @@ typedef struct {
 #define GPIOD_REG_RESET()					do{(RCC->AHBRSTR |= (1<<20)); (RCC->AHBENR &= ~(1<<20));}while(0)
 #define GPIOF_REG_RESET()					do{(RCC->AHBRSTR |= (1<<22)); (RCC->AHBENR &= ~(1<<22));}while(0)
 
-#define SPI2_PCLK_DISABLE()					(RCC->APB1 &= ~(1<<14))
-#define SPI3_PCLK_DISABLE()					(RCC->APB1 &= ~(1<<15))
+#define SPI2_PCLK_DISABLE()					(RCC->APB1ENR &= ~(1<<14))
+#define SPI3_PCLK_DISABLE()					(RCC->APB1ENR &= ~(1<<15))
 
 #define GPIO_BASE_ADDR_TO_CODE(x)			((x == GPIOA)?0:\
 		                                    (x == GPIOB)?1:\

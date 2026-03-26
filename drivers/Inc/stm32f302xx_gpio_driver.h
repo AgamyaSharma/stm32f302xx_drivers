@@ -100,12 +100,12 @@ void GPIO_ReadFromOutputPort(GPIO_RegDef_t *pGPIOx, uint16_t value);
 
 void GPIO_ToggleOutputPin(GPIO_RegDef_t *pGPIOx, uint8_t PinNumber);
 
-void GPIO_IRQConfig(uint8_t IRQNumber, uint8_t IRQPriority, uint8_t EnorDi);
+void GPIO_IRQConfig(uint8_t IRQNumber, uint8_t EnorDi);
 
 
 void GPIO_IRQHandle(uint8_t PinNumber);
 
-
+void GPIO_PriorityConfig(uint8_t IRQPriority,uint8_t IRQNumber);
 
 
 

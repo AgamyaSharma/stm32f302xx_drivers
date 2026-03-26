@@ -171,18 +171,18 @@ void GPIO_ToggleOutputPin(GPIO_RegDef_t *pGPIOx, uint8_t PinNumber){
 
 }
 void GPIO_IRQConfig(uint8_t IRQNumber, uint8_t EnorDi){
-	if(EnorDi== Enable){
+	if(EnorDi== ENABLE){
 		if(IRQNumber <=31){
 
-			NVIC->ISER[0] |= (1<< IRQNUMBER);
+			NVIC->ISER[0] |= (1<< IRQNumber);
 
-		}else if(IRQNumber > 31 && IRQNUMBERS <=63){
+		}else if(IRQNumber > 31 && IRQNumber <=63){
 
-			NVIC->ISER[1] |= (1<< IRQNUMBER % 32);
+			NVIC->ISER[1] |= (1<< IRQNumber % 32);
 
-		}else if(IRQNumber > 63 && IRQNUMBER <=95){
+		}else if(IRQNumber > 63 & IRQNumber <=95){
 
-			NVIC->ISER[2] |= (1<< (IRQNUMBER % 64));
+			NVIC->ISER[2] |= (1<< (IRQNumber % 64));
 
 		}
 
@@ -190,10 +190,10 @@ void GPIO_IRQConfig(uint8_t IRQNumber, uint8_t EnorDi){
 		if(IRQNumber <=31){
 
 			NVIC->ICER[0] |= (1<<IRQNumber);
-		}else if(IRQNumber > 31 && IRQNUMBERS <=63){
+		}else if(IRQNumber > 31 && IRQNumber <=63){
 
 			NVIC->ICER[1] |= (1<<(IRQNumber % 32));
-		}else if(IRQNumber > 63 && IRQNUMBER <=95){
+		}else if(IRQNumber > 63 && IRQNumber <=95){
 
 			NVIC->ICER[2] |= (1<<(IRQNumber % 64));
 

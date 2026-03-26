@@ -2,6 +2,10 @@
 
 #ifndef INC_STM32F302XX_SPI_DRIVER_H_
 #define INC_STM32F302XX_SPI_DRIVER_H_
+#include <stdint.h>
+#include "stm32f302xx.h"
+
+
 typedef struct {
 	uint8_t SPI_DeviceMode;
 	uint8_t SPI_BusConfig;
@@ -18,7 +22,7 @@ typedef struct{
 }SPI_Handle_t;
 
 #define SPI_DEVICE_MODE_MASTER					1
-#define SPI_DEVICE_MODE_MASTER					0
+#define SPI_DEVICE_MODE_SLAVE					0
 
 #define SPI_BUS_CONFIG_FD						1
 #define SPI_BUS_CONFIG_HD						2
@@ -44,6 +48,18 @@ typedef struct{
 #define SPI_CPHA_HIGH							1
 #define SPI_CPHA_LOW							0
 
+#define SPI_SSM_EN							    1
+#define SPI_SSM_DI							    0
+
+#define IS_SPI_DEVICE_MODE(MODE)                    ((MODE) <= SPI_DEVICE_MODE_SLAVE)
+#define IS_SPI_BUS_CONFIG(BUSCONFIG)				((BUSCONFIG) <= SPI_BUS_CONFIG_SIMPLEX_RX)
+#define IS_SPI_SCLK_SPEED(SPEED)					((SPEED) <= SPI_SCLK_SPEED_DIV256)
+#define IS_SPI_DFF(DFF)								((DFF) <= SPI_DFF_16BITS)
+#define IS_SPI_CPOL(CPOL)							((CPOL) <= SPI_CPOL_HIGH)
+#define IS_SPI_CPHA(CPHA)							((CPHA) <= SPI_CPHA_HIGH)
+#define IS_SPI_SSM(SSM)								((SSM) <= SPI_SSM_EN)
+
+
 
 
 
@@ -62,7 +78,7 @@ void SPI_SendData(SPI_RegDef_t *pSPIx, uint8_t *pTxBuffer, uint32_t Len);
 void SPI_IRQConfig(uint8_t IRQNumber, uint8_t IRQPriority, uint8_t EnorDi);
 
 
-void SPI_IRQHandle(SPI_Handle *pSPIHandle );
+void SPI_IRQHandle(SPI_Handle_t *pSPIHandle );
 
 #endif /* INC_STM32F302XX_SPI_DRIVER_H_ */
 
