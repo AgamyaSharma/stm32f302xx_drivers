@@ -61,6 +61,14 @@ typedef struct{
 
 
 
+#define SPI2_REG_RESET()					do{(RCC->APB1RSTR |= (1<<14)); (RCC->APB1RSTR &= ~(1<<14));}while(0)
+#define SPI3_REG_RESET()					do{(RCC->APB1RSTR |= (1<<15)); (RCC->APB1RSTR &= ~(1<<15));}while(0)
+
+#define SPI_TXE_FLAG                        (1 << 1)
+#define SPI_RXNE_FLAG                       (1)
+#define SPI_BUSY_FLAG                       (1 << 7)
+#define SPI_OVR_FLAG                        (1 << 6)
+#define SPI_UDR_FLAG                        (1 << 3)
 
 
 void SPI_PeriClockControl(SPI_RegDef_t *pSPIx, uint8_t EnorDi);
@@ -73,12 +81,14 @@ void SPI_DeInnit(SPI_RegDef_t *pSPIx);
 
 void SPI_SendData(SPI_RegDef_t *pSPIx, uint8_t *pTxBuffer, uint32_t Len);
 
-void SPI_SendData(SPI_RegDef_t *pSPIx, uint8_t *pTxBuffer, uint32_t Len);
+void SPI_ReceiveData(SPI_RegDef_t *pSPIx, uint8_t *pRxBuffer, uint32_t Len);
 
 void SPI_IRQConfig(uint8_t IRQNumber, uint8_t IRQPriority, uint8_t EnorDi);
 
 
 void SPI_IRQHandle(SPI_Handle_t *pSPIHandle );
+
+uint8_t SPI_GetStatusFlag(SPI_RegDef_t *pSPIx, uint8_t FlagName);
 
 #endif /* INC_STM32F302XX_SPI_DRIVER_H_ */
 

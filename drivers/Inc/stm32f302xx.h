@@ -201,11 +201,11 @@ typedef struct {
 #define GPIOD_PCLK_DI()						(RCC->AHBENR &= ~(1<<20))
 #define GPIOF_PCLK_DI()						(RCC->AHBENR &= ~(1<<22))
 
-#define GPIOA_REG_RESET()					do{(RCC->AHBRSTR |= (1<<17)); (RCC->AHBENR &= ~(1<<17));}while(0)
-#define GPIOB_REG_RESET()					do{(RCC->AHBRSTR |= (1<<18)); (RCC->AHBENR &= ~(1<<18));}while(0)
-#define GPIOC_REG_RESET()					do{(RCC->AHBRSTR |= (1<<19)); (RCC->AHBENR &= ~(1<<19));}while(0)
-#define GPIOD_REG_RESET()					do{(RCC->AHBRSTR |= (1<<20)); (RCC->AHBENR &= ~(1<<20));}while(0)
-#define GPIOF_REG_RESET()					do{(RCC->AHBRSTR |= (1<<22)); (RCC->AHBENR &= ~(1<<22));}while(0)
+#define GPIOA_REG_RESET()					do{(RCC->AHBRSTR |= (1<<17)); (RCC->AHBRSTR &= ~(1<<17));}while(0)
+#define GPIOB_REG_RESET()					do{(RCC->AHBRSTR |= (1<<18)); (RCC->AHBRSTR &= ~(1<<18));}while(0)
+#define GPIOC_REG_RESET()					do{(RCC->AHBRSTR |= (1<<19)); (RCC->AHBRSTR &= ~(1<<19));}while(0)
+#define GPIOD_REG_RESET()					do{(RCC->AHBRSTR |= (1<<20)); (RCC->AHBRSTR &= ~(1<<20));}while(0)
+#define GPIOF_REG_RESET()					do{(RCC->AHBRSTR |= (1<<22)); (RCC->AHBRSTR &= ~(1<<22));}while(0)
 
 #define SPI2_PCLK_DISABLE()					(RCC->APB1ENR &= ~(1<<14))
 #define SPI3_PCLK_DISABLE()					(RCC->APB1ENR &= ~(1<<15))
@@ -215,6 +215,8 @@ typedef struct {
 		                                    (x == GPIOC)?2:\
 		                                    (x == GPIOD)?3:\
 		                                    (x == GPIOF)?5:0)
+
+
 
 
 
@@ -242,7 +244,10 @@ typedef struct {
 
 #define SET 								ENABLE
 #define RESET 								DISABLE
-
 #define GPIO_PIN_SET						SET
 #define GPIO_PIN_RESET						RESET
+#define FLAG_RESET							RESET
+#define FLAG_SET							SET
+
+#define	SPI_CR1_CP
 #endif /* INC_STM32F302XX_H_ */
