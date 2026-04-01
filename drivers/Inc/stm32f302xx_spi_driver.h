@@ -19,6 +19,12 @@ typedef struct {
 typedef struct{
 	SPI_RegDef_t *pSPIx;
 	SPI_Config_t SPI_Config;
+	uint8_t		 *pRxBuffer;
+	uint8_t		 *pTxBuffer;
+	uint32_t	  TxLen;
+	uint32_t      pRxLen;
+	uint8_t		  pTxState;
+	uint8_t		  pRxState;
 }SPI_Handle_t;
 
 #define SPI_DEVICE_MODE_MASTER					1
@@ -70,6 +76,10 @@ typedef struct{
 #define SPI_OVR_FLAG                        (1 << 6)
 #define SPI_UDR_FLAG                        (1 << 3)
 
+#define SPI_READY							0
+#define SPI_BUSY_IN_RX						1
+#define SPI_BUSY_IN_TX						2
+
 
 void SPI_PeriClockControl(SPI_RegDef_t *pSPIx, uint8_t EnorDi);
 
@@ -83,8 +93,10 @@ void SPI_SendData(SPI_RegDef_t *pSPIx, uint8_t *pTxBuffer, uint32_t Len);
 
 void SPI_ReceiveData(SPI_RegDef_t *pSPIx, uint8_t *pRxBuffer, uint32_t Len);
 
-void SPI_IRQConfig(uint8_t IRQNumber, uint8_t IRQPriority, uint8_t EnorDi);
 
+void SPI_IRQConfig(uint8_t IRQNumber, uint8_t EnorDi);
+
+void SPI_PriorityConfig(uint8_t IRQPriority,uint8_t IRQNumber);
 
 void SPI_IRQHandle(SPI_Handle_t *pSPIHandle );
 

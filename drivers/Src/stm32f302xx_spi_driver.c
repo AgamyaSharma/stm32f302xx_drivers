@@ -70,7 +70,7 @@ void SPI_Innit(SPI_Handle_t *pSPIHandle){
 	 pSPIHandle->pSPIx->CR1 &= ~(0x7 << 3);
 	 pSPIHandle->pSPIx->CR1 |= (pSPIHandle->SPI_Config.SPI_Speed << 3);
 
-	 if((pSPIHandle->SPI_Config.SPI_ISM) = SPI_SSM_EN){
+	 if((pSPIHandle->SPI_Config.SPI_ISM == (SPI_SSM_EN))){
 		 temp = (pSPIHandle->SPI_Config.SPI_ISM << 9);
 		 pSPIHandle->pSPIx->CR1 |= temp;
 
@@ -121,11 +121,10 @@ void SPI_SendData(SPI_RegDef_t *pSPIx, uint8_t *pTxBuffer, uint32_t Len){
 				Len--;
 				Len--;
 				pTxBuffer = (((uint16_t*) pTxBuffer) + 1);
-				pTxBuffer = (((uint16_t*) pTxBuffer) + 1);
 			}else{
 				pSPIx->DR = (*(uint8_t*)pTxBuffer);
 				Len--;
-				pTxBuffer = ((uint8_t*) pTxBuffer) + 1;
+				pTxBuffer = (((uint8_t*) pTxBuffer) + 1);
 			}
 		}
 	}
@@ -138,21 +137,66 @@ void SPI_receiveData(SPI_RegDef_t *pSPIx, uint8_t *pRxBuffer, uint32_t Len){
 				uint32_t CRRead = pSPIx->CR2;
 				uint8_t temp = ((uint8_t)(((CRRead >> 8))) & 0xF);
 				if(temp == 0xF){
-				  (*(uint16_t*)pTxBuffer) = pSPIx->DR;
+				  (*(uint16_t*)pRxBuffer) = pSPIx->DR;
 					Len--;
 					Len--;
-					pTxBuffer = (((uint16_t*) pTxBuffer) + 1);
-					pTxBuffer = (((uint16_t*) pTxBuffer) + 1);
+					pRxBuffer = (((uint16_t*) pRxBuffer) + 1);
+
 				}else{
-					pSPIx->DR = (*(uint8_t*)pTxBuffer);
+					(*(uint8_t*)pRxBuffer) = pSPIx->DR ;
 					Len--;
-					pTxBuffer = ((uint8_t*) pTxBuffer) + 1;
+					pRxBuffer = (((uint8_t*) pRxBuffer) + 1);
 				}
 			}
 		}
 
 	}
 
+
+void SPI_IRQConfig(uint8_t IRQNumber, uint8_t EnorDi){
+	if(EnorDi== ENABLE){
+		if(IRQNumber <=31){
+
+			NVIC->ISER[0] |= (1<< IRQNumber);
+
+		}else if((IRQNumber > 31) && (IRQNumber <=63)){
+
+			NVIC->ISER[1] |= (1<< IRQNumber % 32);
+
+		}else if((IRQNumber > 63) && (IRQNumber <=95)){
+
+			NVIC->ISER[2] |= (1<< (IRQNumber % 64));
+
+		}
+
+	}else {
+		if(IRQNumber <=31){
+
+			NVIC->ICER[0] |= (1<<IRQNumber);
+		}else if(IRQNumber > 31 && IRQNumber <=63){
+
+			NVIC->ICER[1] |= (1<<(IRQNumber % 32));
+		}else if(IRQNumber > 63 && IRQNumber <=95){
+
+			NVIC->ICER[2] |= (1<<(IRQNumber % 64));
+
+		}
+
+	}
+
 }
 
+void SPI_PriorityConfig(uint8_t IRQPriority,uint8_t IRQNumber){
+	uint8_t iprx = (IRQNumber / 4);
+	uint8_t iprxSection = (IRQNumber % 4);
+	uint8_t shiftAmount =((8*iprxSection) + 4);
+	NVIC->IPR[iprx] |= (IRQPriority << (shiftAmount));
+}
+void SPI_IRQHandle(SPI_Handle_t *pSPIHandle){
 
+}
+void SPI_SendDataIT(SPI_Handle_t *pSPIHandle, uint8_t *pTxBuffer, uint32_t Len){
+	pSPIHandle->
+}
+
+void SPI_ReceiveDataIT(SPI_Handle_t *pSPIHandle, uint8_t *pRxBuffer, uint32_t Len);
