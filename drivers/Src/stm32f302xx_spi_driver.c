@@ -192,11 +192,49 @@ void SPI_PriorityConfig(uint8_t IRQPriority,uint8_t IRQNumber){
 	uint8_t shiftAmount =((8*iprxSection) + 4);
 	NVIC->IPR[iprx] |= (IRQPriority << (shiftAmount));
 }
-void SPI_IRQHandle(SPI_Handle_t *pSPIHandle){
 
-}
 void SPI_SendDataIT(SPI_Handle_t *pSPIHandle, uint8_t *pTxBuffer, uint32_t Len){
-	pSPIHandle->
+
+	uint8_t state = pSPIHandle->TxState;
+	if(state != SPI_BUSY_IN_TX){
+		pSPIHandle->pTxBuffer = pTxBuffer;// these are global variables
+		pSPIHandle->TxLen = Len;
+		pSPIHandle->TxState = SPI_BUSY_IN_TX;
+		pSPIHandle->pSPIx->CR2 |= (1 << 7);
+	}
 }
 
-void SPI_ReceiveDataIT(SPI_Handle_t *pSPIHandle, uint8_t *pRxBuffer, uint32_t Len);
+void SPI_ReceiveDataIT(SPI_Handle_t *pSPIHandle, uint8_t *pRxBuffer, uint32_t Len){
+	uint8_t state = pSPIHandle->RxState;
+		if(state != SPI_BUSY_IN_RX){
+			pSPIHandle->pRxBuffer = pRxBuffer;// these are global variables
+			pSPIHandle->TxLen = Len;
+			pSPIHandle->TxState = SPI_BUSY_IN_RX;
+			pSPIHandle->pSPIx->CR2 |= (1 << 6);
+		}
+}
+
+void SPI_IRQHandle(SPI_Handle_t *pSPIHandle){
+	uint8_t temp1;
+	uint8_t temp2;
+
+	temp1 = pSPIHandle->pSPIx->SR & (1 << 1);
+	temp2 = pSPIHandle->pSPIx->CR2 & (1 << 7);
+
+	if(temp1 && temp2){
+		spi_txe_interrupt_handle();
+	}
+
+	temp1 = pSPIHandle->pSPIx->SR & (1 << 0);
+	temp2 = pSPIHandle->pSPIx->CR2 & (1 << 6);
+
+	if(temp1 && temp2){
+		spi_rxne_interrupt_handle();
+	}
+
+	temp1 = pSPIHandle->pSPIx->SR & (1 << 6);
+	temp2 = pSPIHandle->pSPIx->CR2 & (1 << 5);
+	if(temp1 && temp2){
+		spi_ovr_err_interrupt_handle();
+	}
+}

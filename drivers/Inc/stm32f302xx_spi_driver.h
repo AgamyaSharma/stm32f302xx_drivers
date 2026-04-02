@@ -22,9 +22,9 @@ typedef struct{
 	uint8_t		 *pRxBuffer;
 	uint8_t		 *pTxBuffer;
 	uint32_t	  TxLen;
-	uint32_t      pRxLen;
-	uint8_t		  pTxState;
-	uint8_t		  pRxState;
+	uint32_t      RxLen;
+	uint8_t		  TxState;
+	uint8_t		  RxState;
 }SPI_Handle_t;
 
 #define SPI_DEVICE_MODE_MASTER					1
