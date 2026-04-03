@@ -7,6 +7,7 @@
 #ifndef INC_STM32F302XX_H_
 #define INC_STM32F302XX_H_
 #include <stdint.h>
+#include <stddef.h>
 /*
  *  base addresses of Flash and SRAM memories
  */

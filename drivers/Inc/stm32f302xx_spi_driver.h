@@ -57,42 +57,44 @@ typedef struct{
 #define SPI_SSM_EN							    1
 #define SPI_SSM_DI							    0
 
-#define IS_SPI_DEVICE_MODE(MODE)                    ((MODE) <= SPI_DEVICE_MODE_SLAVE)
-#define IS_SPI_BUS_CONFIG(BUSCONFIG)				((BUSCONFIG) <= SPI_BUS_CONFIG_SIMPLEX_RX)
-#define IS_SPI_SCLK_SPEED(SPEED)					((SPEED) <= SPI_SCLK_SPEED_DIV256)
-#define IS_SPI_DFF(DFF)								((DFF) <= SPI_DFF_16BITS)
-#define IS_SPI_CPOL(CPOL)							((CPOL) <= SPI_CPOL_HIGH)
-#define IS_SPI_CPHA(CPHA)							((CPHA) <= SPI_CPHA_HIGH)
-#define IS_SPI_SSM(SSM)								((SSM) <= SPI_SSM_EN)
+#define IS_SPI_DEVICE_MODE(MODE)                ((MODE) <= SPI_DEVICE_MODE_SLAVE)
+#define IS_SPI_BUS_CONFIG(BUSCONFIG)			((BUSCONFIG) <= SPI_BUS_CONFIG_SIMPLEX_RX)
+#define IS_SPI_SCLK_SPEED(SPEED)				((SPEED) <= SPI_SCLK_SPEED_DIV256)
+#define IS_SPI_DFF(DFF)							((DFF) <= SPI_DFF_16BITS)
+#define IS_SPI_CPOL(CPOL)						((CPOL) <= SPI_CPOL_HIGH)
+#define IS_SPI_CPHA(CPHA)						((CPHA) <= SPI_CPHA_HIGH)
+#define IS_SPI_SSM(SSM)							((SSM) <= SPI_SSM_EN)
 
 
 
-#define SPI2_REG_RESET()					do{(RCC->APB1RSTR |= (1<<14)); (RCC->APB1RSTR &= ~(1<<14));}while(0)
-#define SPI3_REG_RESET()					do{(RCC->APB1RSTR |= (1<<15)); (RCC->APB1RSTR &= ~(1<<15));}while(0)
+#define SPI2_REG_RESET()					    do{(RCC->APB1RSTR |= (1<<14)); (RCC->APB1RSTR &= ~(1<<14));}while(0)
+#define SPI3_REG_RESET()					    do{(RCC->APB1RSTR |= (1<<15)); (RCC->APB1RSTR &= ~(1<<15));}while(0)
 
-#define SPI_TXE_FLAG                        (1 << 1)
-#define SPI_RXNE_FLAG                       (1)
-#define SPI_BUSY_FLAG                       (1 << 7)
-#define SPI_OVR_FLAG                        (1 << 6)
-#define SPI_UDR_FLAG                        (1 << 3)
+#define SPI_TXE_FLAG                         	(1 << 1)
+#define SPI_RXNE_FLAG                       	(1)
+#define SPI_BUSY_FLAG                       	(1 << 7)
+#define SPI_OVR_FLAG                        	(1 << 6)
+#define SPI_UDR_FLAG                        	(1 << 3)
 
-#define SPI_READY							0
-#define SPI_BUSY_IN_RX						1
-#define SPI_BUSY_IN_TX						2
+#define SPI_READY								0
+#define SPI_BUSY_IN_RX							1
+#define SPI_BUSY_IN_TX							2
+
+#define SPI_EVENT_TX_CMPLT						1
+#define SPI_EVENT_RX_CMPLT						2
+#define SPI_EVENT_OVR_ERR						3
+
 
 
 void SPI_PeriClockControl(SPI_RegDef_t *pSPIx, uint8_t EnorDi);
 
-
 void SPI_Innit(SPI_Handle_t *pSPIHandle);
-
 
 void SPI_DeInnit(SPI_RegDef_t *pSPIx);
 
 void SPI_SendData(SPI_RegDef_t *pSPIx, uint8_t *pTxBuffer, uint32_t Len);
 
 void SPI_ReceiveData(SPI_RegDef_t *pSPIx, uint8_t *pRxBuffer, uint32_t Len);
-
 
 void SPI_IRQConfig(uint8_t IRQNumber, uint8_t EnorDi);
 
@@ -101,6 +103,20 @@ void SPI_PriorityConfig(uint8_t IRQPriority,uint8_t IRQNumber);
 void SPI_IRQHandle(SPI_Handle_t *pSPIHandle );
 
 uint8_t SPI_GetStatusFlag(SPI_RegDef_t *pSPIx, uint8_t FlagName);
+
+static void spi_txe_interrupt_handle(SPI_Handle_t *pSPIHandle);
+
+static void spi_rxnxe_interrupt_handle(SPI_Handle_t *pSPIHandle);
+
+static void spi_ovr_err_interrupt_handle(SPI_Handle_t *pSPIHandle);
+
+void SPI_ClearOVRFlag(SPI_Handle_t *pSPIHandle);
+
+void SPI_CloseTransmission(SPI_Handle_t *pSPIHandle);
+
+void SPI_CloseReception(SPI_Handle_t *pSPIHandle);
+
+__attribute__((weak)) void SPI_ApplicationEventCallback(SPI_Handle_t *pSPIHandle,uint8_t APPEv);
 
 #endif /* INC_STM32F302XX_SPI_DRIVER_H_ */
 
