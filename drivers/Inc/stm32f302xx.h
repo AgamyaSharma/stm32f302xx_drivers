@@ -162,6 +162,20 @@ typedef struct{
 	uint32_t I2CPR;
 }SPI_RegDef_t;
 
+typedef struct{
+	uint32_t	CR1;
+	uint32_t	CR2;
+	uint32_t	CR3;
+	uint32_t	BRR;
+	uint32_t	GTPR;
+	uint32_t	RTOR;
+	uint32_t	RQR;
+	uint32_t	ISR;
+	uint32_t	ICR;
+	uint32_t	RDR;
+	uint32_t	TDR;
+}USART_RegDef_t;
+
 typedef struct {
     volatile uint32_t ISER[8];
     uint32_t RESERVED0[24];
