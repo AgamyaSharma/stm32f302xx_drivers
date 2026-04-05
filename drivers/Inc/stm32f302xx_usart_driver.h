@@ -7,12 +7,20 @@
 #include "stm32f302xx.h"
 
 typedef struct{
-
+	uint8_t  USART_Mode;
+	uint8_t  USART_WordLength;
+	uint32_t USART_BaudRate;
+	uint8_t  USART_ClkControl;
+	uint8_t  USART_CPHA;
+	uint8_t  USART_CPOL;
+	uint8_t  USART_StopBits;
+	uint8_t  USART_ParityControl;
+	uint8_t  USART_HwFlowControl;
 }USART_Config_t;
 
 typedef struct{
 	USART_RegDef_t *pUSARTx;
-	USART_Config_t SPIConfig;
+	USART_Config_t USART_Config;
 }USART_Handle_t;
 
 

@@ -96,8 +96,10 @@ void SPI_Innit(SPI_Handle_t *pSPIHandle){
 void SPI_DeInnit(SPI_RegDef_t *pSPIx){
 	if(pSPIx == SPI2){
 		 SPI2_REG_RESET();
+		 SPI2_PCLK_DISABLE();
 	}else if(pSPIx == SPI3){
 		 SPI3_REG_RESET();
+		 SPI3_PCLK_DISABLE();
 	}
 
 }
