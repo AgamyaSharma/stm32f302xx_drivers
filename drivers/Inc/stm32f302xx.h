@@ -19,9 +19,9 @@
 /*
  * base addresses of peripherals AHBX and APBx buses
  */
-#define PERIPERH_BASE_ADDR					0x40000000U
-#define APB1PERIPH_BASE_ADDR				PERIPERH_BASE_ADDR
-#define APB2PERIPH_BASE_ADDR				0x40010000U
+#define PERIPH_BASE_ADDR					0x40000000U
+#define APB1PERIPH_BASE_ADDR				(PERIPH_BASE_ADDR)
+#define APB2PERIPH_BASE_ADDR				(0x40010000U)
 #define AHB1PERIPH_BASE_ADDR				0x40020000U
 #define AHB2PERIPH_BASE_ADDR				0x48000000U
 #define AHB3PERIPH_BASE_ADDR				0x50000000U
@@ -251,6 +251,10 @@ typedef struct {
 
 #define SPI2								((SPI_RegDef_t*)SPI2_BASE_ADDR)
 #define SPI3								((SPI_RegDef_t*)SPI3_BASE_ADDR)
+
+#define USART1						((USART_RegDef_t*)USART1_BASE_ADDR)
+#define USART2						((USART_RegDef_t*)USART2_BASE_ADDR)
+#define USART3						((USART_RegDef_t*)USART3_BASE_ADDR)
 
 
 
