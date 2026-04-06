@@ -13,6 +13,7 @@ typedef struct{
 	uint8_t  USART_ClkControl;
 	uint8_t  USART_CPHA;
 	uint8_t  USART_CPOL;
+	uint8_t  USART_OverSampling;
 	uint8_t  USART_StopBits;
 	uint8_t  USART_ParityControl;
 	uint8_t  USART_HwFlowControl;
@@ -37,6 +38,41 @@ typedef struct{
 #define USART1_REG_RESET()			do{((RCC->APB2RSTR) |= (1 << 14)); ((RCC->APB2RSTR) &= ~(1 << 14));}while(0)
 #define USART2_REG_RESET()			do{((RCC->APB1RSTR) |= (1 << 14)); ((RCC->APB1RSTR) &= ~(1 << 14));}while(0)
 #define USART3_REG_RESET()			do{((RCC->APB1RSTR) |= (1 << 14)); ((RCC->APB1RSTR) &= ~(1 << 14));}while(0)
+
+#define USART_MODE_TX				1
+#define USART_MODE_RX				2
+#define USART_MODE_DUPLEX			3
+
+#define USART_WL_7BIT				1
+#define USART_WL_8BIT				2
+#define USART_WL_9BIT				3
+
+#define USART_CLK_ENABLE			1
+#define USART_CLK_DISABLE			0
+
+#define USART_CPHA_LOW				0
+#define USART_CPHA_HIGH				1
+
+#define USART_CPOL_LOW				0
+#define USART_CPOL_HIGH				1
+
+#define USART_SP_1					1
+#define USART_SP_0_5				2
+#define USART_SP_2					3
+#define USART_SP_1_5				4
+
+#define USART_PARITY_EVEN			1
+#define USART_PARITY_ODD			2
+
+
+#define IS_USART_MODE(MODE)				(MODE <= USART_MODE_DUPLEX)
+#define IS_USART_WL_BITS(BITS)			(BITS <= USART_WL_9BIT)
+#define IS_USART_CLK_MODE(CLK)			(CLK <= USART_CLK_ENABLE)
+#define IS_USART_CPHA(CPHA)				(CPHA <= USART_CPHA_HIGH)
+#define IS_USART_CPOL(CPOL)				(CPOL <= USART_CPOL_HIGH)
+#define IS_USART_SP(SP)					(SP <= USART_SP_1_5)
+#define IS_USART_PARITY(PARITY)			(PARITY <= USART_PARITY_ODD)
+
 
 void USART_PeriClockControl(USART_RegDef_t *pUSARTx, uint8_t EnorDi);
 

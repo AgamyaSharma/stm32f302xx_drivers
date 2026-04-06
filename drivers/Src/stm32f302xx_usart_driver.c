@@ -36,3 +36,7 @@ void USART_Deinnit(USART_RegDef_t *pUSARTx){
 	}
 
 }
+
+void USART_Innit(USART_RegDef_t *pUSARTHandle){
+
+}
