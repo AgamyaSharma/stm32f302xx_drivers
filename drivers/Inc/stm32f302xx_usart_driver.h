@@ -64,6 +64,12 @@ typedef struct{
 #define USART_PARITY_EVEN			1
 #define USART_PARITY_ODD			2
 
+#define USART_HWFLOW_RTSE			1
+#define USART_HWFLOW_CTSE			2
+
+#define USART_OVER_8				0
+#define USART_OVER_16				1
+
 
 #define IS_USART_MODE(MODE)				(MODE <= USART_MODE_DUPLEX)
 #define IS_USART_WL_BITS(BITS)			(BITS <= USART_WL_9BIT)
@@ -78,7 +84,7 @@ void USART_PeriClockControl(USART_RegDef_t *pUSARTx, uint8_t EnorDi);
 
 void USART_Deinnit(USART_RegDef_t *pUSARTx);
 
-void USART_Innit(USART_RegDef_t *pUSARTHandle);
+void USART_Innit(USART_Handle_t *pUSARTHandle);
 
 void USART_SendData(USART_RegDef_t *pUSARTx, uint8_t *pTxBuffer, uint32_t Len );
 

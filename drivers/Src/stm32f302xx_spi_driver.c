@@ -22,7 +22,7 @@ void SPI_PeriClockControl(SPI_RegDef_t *pSPIx, uint8_t EnorDi){
 
 void SPI_Innit(SPI_Handle_t *pSPIHandle){
 	if(!IS_SPI_DEVICE_MODE(pSPIHandle->SPI_Config.SPI_DeviceMode)){
-		return;
+		    return;
 	}
 
 	if(!IS_SPI_BUS_CONFIG(pSPIHandle->SPI_Config.SPI_BusConfig)){
