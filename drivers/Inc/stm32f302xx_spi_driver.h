@@ -57,7 +57,7 @@ typedef struct{
 #define SPI_SSM_EN							    1
 #define SPI_SSM_DI							    0
 
-#define IS_SPI_DEVICE_MODE(MODE)                ((MODE) <= SPI_DEVICE_MODE_SLAVE)
+#define IS_SPI_DEVICE_MODE(MODE)                ((MODE) <= SPI_DEVICE_MODE_MASTER)
 #define IS_SPI_BUS_CONFIG(BUSCONFIG)			((BUSCONFIG) <= SPI_BUS_CONFIG_SIMPLEX_RX)
 #define IS_SPI_SCLK_SPEED(SPEED)				((SPEED) <= SPI_SCLK_SPEED_DIV256)
 #define IS_SPI_DFF(DFF)							((DFF) <= SPI_DFF_16BITS)
