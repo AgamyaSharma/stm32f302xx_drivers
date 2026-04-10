@@ -26,7 +26,7 @@ int main(void)
 	GPIO_Innit(&SPIPins);
 	SPI_Handle_t SPITX = {0};
 
-	//SPI config for Transmission
+	// SPI config for Transmission
 	SPITX.pSPIx = SPI2;
 	SPITX.SPI_Config.SPI_DFF = SPI_DFF_8BITS;
 	SPITX.SPI_Config.SPI_CPOL = SPI_CPOL_LOW; // To be configured as per the module or the sensor

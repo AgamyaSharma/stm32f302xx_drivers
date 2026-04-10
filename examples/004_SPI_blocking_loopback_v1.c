@@ -1,4 +1,3 @@
-
 #include <stdint.h>
 #include "stm32f302xx.h"
 #include "stm32f302xx_gpio_driver.h"
@@ -46,6 +45,7 @@ int main(void)
 	SPI_PeriClockControl(SPI2,ENABLE); // clk must be enabled before writing into any register
 	SPI_Innit(&SPITX);
 
+	// the MOSI and MISO pins of SPI2 are connected with a jumper
 	uint8_t tx_buffer[1] = {0x42}; // transmission buffer
 	while(1){
 		SPI_SendData(SPI2, tx_buffer,1);
