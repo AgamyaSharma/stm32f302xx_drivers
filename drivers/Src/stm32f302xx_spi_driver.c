@@ -282,8 +282,8 @@ static void spi_rxnxe_interrupt_handle(SPI_Handle_t *pSPIHandle){
 					}
 
 					if(!pSPIHandle->RxLen){
-						    SPI_CloseReception(pSPIHandle);
-							SPI_ApplicationEventCallback(pSPIHandle,SPI_EVENT_RX_CMPLT);
+						SPI_CloseReception(pSPIHandle);
+						SPI_ApplicationEventCallback(pSPIHandle,SPI_EVENT_RX_CMPLT);
 				    }
 
 }

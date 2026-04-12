@@ -75,7 +75,8 @@ void USART_Innit(USART_Handle_t *pUSARTHandle){
 	}
 
 	temp = pUSARTHandle->USART_Config.USART_BaudRate;
-	pUSARTHandle->pUSARTx->BRR = temp;
+
+	pUSARTHandle->pUSARTx->BRR = ((8000000 + (temp/2)) / temp);   // TODO: A COMPLETE FUNCTION FOR GETTING THE CLOCK INFO FROM RCC ALSO LOOK INTO AN RCC DRIVER
 
 	temp = pUSARTHandle->USART_Config.USART_ClkControl;
 	if(temp == USART_CLK_ENABLE){
@@ -145,6 +146,33 @@ void USART_Innit(USART_Handle_t *pUSARTHandle){
 		pUSARTHandle->pUSARTx->CR1 |= (1 << 2);
 		pUSARTHandle->pUSARTx->CR1 |= (1 << 3);
 	}
+
+	pUSARTHandle->pUSARTx->CR1 |= (1);
 }
 
+uint8_t USART_GetStatusFlag(USART_RegDef_t*pUSARTx, uint8_t FlagName){
 
+	 if(pUSARTx->ISR & FlagName){
+		 return FLAG_SET;
+	 }else{
+		 return FLAG_RESET;
+	 }
+}
+void USART_SendData(USART_Handle_t *pUSARTHandle, uint32_t Len){
+	while(Len > 0){
+		while((USART_GetStatusFlag(!pUSARTHandle->pUSARTx, USART_TXE_FLAG)));
+		if(pUSARTHandle->USART_Config.USART_WordLength == USART_WL_7BIT){
+			(*((uint8_t*)&pUSARTHandle->pUSARTx->TDR)) = (*((uint8_t*)pUSARTHandle->pTxBuffer) & (0x7F) ) ;
+			pUSARTHandle->pTxBuffer = (((uint8_t*) pUSARTHandle->pTxBuffer) + 1);
+			Len--;
+		}else if(pUSARTHandle->USART_Config.USART_WordLength == USART_WL_8BIT){
+			(*((uint8_t*)&pUSARTHandle->pUSARTx->TDR)) = (*((uint8_t*)pUSARTHandle->pTxBuffer)) ;
+			pUSARTHandle->pTxBuffer = (((uint8_t*)pUSARTHandle->pTxBuffer) + 1);
+			Len--;
+		}else if(pUSARTHandle->USART_Config.USART_WordLength == USART_WL_8BIT){
+			(*((uint16_t*)&pUSARTHandle->pUSARTx->TDR)) = (*((uint16_t*)pUSARTHandle->pTxBuffer)) ;
+			pUSARTHandle->pTxBuffer = (((uint16_t*) pUSARTHandle->pTxBuffer) + 1);
+			Len--;
+	}
+  }
+}
