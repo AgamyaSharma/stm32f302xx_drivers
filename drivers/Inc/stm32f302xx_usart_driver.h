@@ -83,7 +83,7 @@ typedef struct{
 #define IS_USART_PARITY(PARITY)			(PARITY <= USART_PARITY_ODD)
 
 #define USART_TXE_FLAG                  (1 << 7)
-#define USART_RXE_FLAG                  (1 << 6)
+#define USART_RXE_FLAG                  (1 << 5)
 
 
 
@@ -95,7 +95,7 @@ void USART_Innit(USART_Handle_t *pUSARTHandle);
 
 void USART_SendData(USART_Handle_t *pUSARTHandle, uint32_t Len);
 
-void USART_ReceiveData(USART_RegDef_t *pUSARTx, uint8_t *pRxBuffer, uint32_t Len );
+void USART_ReceiveData(USART_Handle_t *pUSARTHandle, uint32_t Len );
 
 void USART_IRQConfig(uint8_t IRQNumber, uint8_t EnorDi);
 

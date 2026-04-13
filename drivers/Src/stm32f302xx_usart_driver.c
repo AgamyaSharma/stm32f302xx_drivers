@@ -71,7 +71,7 @@ void USART_Innit(USART_Handle_t *pUSARTHandle){
 	    pUSARTHandle->pUSARTx->CR1 &= ~(1 << 12);
 	}else if(temp == USART_WL_9BIT){
 		pUSARTHandle->pUSARTx->CR1 &= ~(1 << 28);
-	    pUSARTHandle->pUSARTx->CR1 &= (1 << 12);
+	    pUSARTHandle->pUSARTx->CR1 |= (1 << 12);
 	}
 
 	temp = pUSARTHandle->USART_Config.USART_BaudRate;
@@ -132,9 +132,9 @@ void USART_Innit(USART_Handle_t *pUSARTHandle){
 
 	temp = pUSARTHandle->USART_Config.USART_OverSampling;
 	if(temp == USART_OVER_8){
-		pUSARTHandle->pUSARTx->CR1 &= ~(1 << 15);
-	}else if(pUSARTHandle->pUSARTx->CR1 == USART_OVER_16){
 		pUSARTHandle->pUSARTx->CR1 |= (1 << 15);
+	}else if(temp == USART_OVER_16){
+		pUSARTHandle->pUSARTx->CR1 &= ~(1 << 15);
 	}
 
 	temp = pUSARTHandle->USART_Config.USART_Mode;
@@ -142,7 +142,7 @@ void USART_Innit(USART_Handle_t *pUSARTHandle){
 		pUSARTHandle->pUSARTx->CR1 |= (1 << 3);
 	}else if(temp == USART_MODE_RX){
 		pUSARTHandle->pUSARTx->CR1 |= (1 << 2);
-	}else if(USART_MODE_DUPLEX){
+	}else if(temp == USART_MODE_DUPLEX){
 		pUSARTHandle->pUSARTx->CR1 |= (1 << 2);
 		pUSARTHandle->pUSARTx->CR1 |= (1 << 3);
 	}
@@ -160,7 +160,7 @@ uint8_t USART_GetStatusFlag(USART_RegDef_t*pUSARTx, uint8_t FlagName){
 }
 void USART_SendData(USART_Handle_t *pUSARTHandle, uint32_t Len){
 	while(Len > 0){
-		while((USART_GetStatusFlag(!pUSARTHandle->pUSARTx, USART_TXE_FLAG)));
+		while(!(USART_GetStatusFlag(pUSARTHandle->pUSARTx, USART_TXE_FLAG)));
 		if(pUSARTHandle->USART_Config.USART_WordLength == USART_WL_7BIT){
 			(*((uint8_t*)&pUSARTHandle->pUSARTx->TDR)) = (*((uint8_t*)pUSARTHandle->pTxBuffer) & (0x7F) ) ;
 			pUSARTHandle->pTxBuffer = (((uint8_t*) pUSARTHandle->pTxBuffer) + 1);
@@ -169,10 +169,30 @@ void USART_SendData(USART_Handle_t *pUSARTHandle, uint32_t Len){
 			(*((uint8_t*)&pUSARTHandle->pUSARTx->TDR)) = (*((uint8_t*)pUSARTHandle->pTxBuffer)) ;
 			pUSARTHandle->pTxBuffer = (((uint8_t*)pUSARTHandle->pTxBuffer) + 1);
 			Len--;
-		}else if(pUSARTHandle->USART_Config.USART_WordLength == USART_WL_8BIT){
-			(*((uint16_t*)&pUSARTHandle->pUSARTx->TDR)) = (*((uint16_t*)pUSARTHandle->pTxBuffer)) ;
+		}else if(pUSARTHandle->USART_Config.USART_WordLength == USART_WL_9BIT){
+			(*((uint16_t*)&pUSARTHandle->pUSARTx->TDR)) = ((*((uint16_t*)pUSARTHandle->pTxBuffer) & (0x1FF))) ;
 			pUSARTHandle->pTxBuffer = (((uint16_t*) pUSARTHandle->pTxBuffer) + 1);
 			Len--;
 	}
   }
+}
+
+void USART_ReceiveData(USART_Handle_t *pUSARTHandle, uint32_t Len ){
+	while(Len > 0){
+			while(!(USART_GetStatusFlag(pUSARTHandle->pUSARTx, USART_RXE_FLAG)));
+			if(pUSARTHandle->USART_Config.USART_WordLength == USART_WL_7BIT){
+				(*((uint8_t*)pUSARTHandle->pRxBuffer)  ) = (*((uint8_t*)&pUSARTHandle->pUSARTx->RDR)& (0x7F)) ;
+				pUSARTHandle->pRxBuffer = (((uint8_t*) pUSARTHandle->pRxBuffer) + 1);
+				Len--;
+			}else if(pUSARTHandle->USART_Config.USART_WordLength == USART_WL_8BIT){
+				 (*((uint8_t*)pUSARTHandle->pRxBuffer)) = (*((uint8_t*)&pUSARTHandle->pUSARTx->RDR));
+				pUSARTHandle->pRxBuffer = (((uint8_t*)pUSARTHandle->pRxBuffer) + 1);
+				Len--;
+			}else if(pUSARTHandle->USART_Config.USART_WordLength == USART_WL_9BIT){
+				  (*((uint16_t*)pUSARTHandle->pRxBuffer)) = ((*((uint16_t*)&pUSARTHandle->pUSARTx->RDR) & (0x1FF))) ;
+				pUSARTHandle->pRxBuffer = (((uint16_t*) pUSARTHandle->pRxBuffer) + 1);
+				Len--;
+				Len--;
+		}
+	  }
 }
