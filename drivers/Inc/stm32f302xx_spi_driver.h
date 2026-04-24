@@ -94,7 +94,7 @@ void SPI_DeInnit(SPI_RegDef_t *pSPIx);
 
 void SPI_SendData(SPI_RegDef_t *pSPIx, uint8_t *pTxBuffer, uint32_t Len);
 
-void SPI_ReceiveData(SPI_RegDef_t *pSPIx, uint8_t *pRxBuffer, uint32_t Len);
+void SPI_RecieveData(SPI_RegDef_t *pSPIx, uint8_t *pRxBuffer, uint32_t Len);
 
 void SPI_IRQConfig(uint8_t IRQNumber, uint8_t EnorDi);
 
@@ -103,6 +103,10 @@ void SPI_PriorityConfig(uint8_t IRQPriority,uint8_t IRQNumber);
 void SPI_IRQHandle(SPI_Handle_t *pSPIHandle );
 
 uint8_t SPI_GetStatusFlag(SPI_RegDef_t *pSPIx, uint8_t FlagName);
+
+void SPI_SendDataIT(SPI_Handle_t *pSPIHandle, uint8_t *pTxBuffer, uint32_t Len);
+
+void SPI_RecieveDataIT(SPI_Handle_t *pSPIHandle, uint8_t *pRxBuffer, uint32_t Len);
 
 static void spi_txe_interrupt_handle(SPI_Handle_t *pSPIHandle);
 

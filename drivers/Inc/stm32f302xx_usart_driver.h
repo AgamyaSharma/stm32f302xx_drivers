@@ -6,6 +6,9 @@
 #include <stdint.h>
 #include "stm32f302xx.h"
 
+#define BUFFER_SIZE						64
+#define BUFFER_MASK						(BUFFER_SIZE - 1)
+
 typedef struct{
 	uint8_t  USART_Mode;
 	uint8_t  USART_WordLength;
@@ -24,10 +27,14 @@ typedef struct{
 	USART_Config_t  USART_Config;
 	uint8_t        *pTxBuffer;
 	uint8_t		   *pRxBuffer;
-	uint32_t        Len;
+	USART_Buffer_t  CirBuf;
 }USART_Handle_t;
 
-
+typedef struct{
+	volatile uint8_t Buffer[BUFFER_SIZE];
+	volatile uint32_t Head;
+	volatile uint32_t Tail;
+}USART_Buffer_t;
 
 
 #define USART1_PCLK_ENABLE()		(RCC->APB2ENR |= (1 << 14))
@@ -85,6 +92,8 @@ typedef struct{
 #define USART_TXE_FLAG                  (1 << 7)
 #define USART_RXE_FLAG                  (1 << 5)
 
+#define BUFFER_SIZE						64
+
 
 
 void USART_PeriClockControl(USART_RegDef_t *pUSARTx, uint8_t EnorDi);
@@ -93,9 +102,9 @@ void USART_Deinnit(USART_RegDef_t *pUSARTx);
 
 void USART_Innit(USART_Handle_t *pUSARTHandle);
 
-void USART_SendData(USART_Handle_t *pUSARTHandle, uint32_t Len);
+void USART_SendData(USART_Handle_t *pUSARTHandle, uint8_t *pTxBuffer, uint32_t Len);
 
-void USART_ReceiveData(USART_Handle_t *pUSARTHandle, uint32_t Len );
+void USART_RecieveData(USART_Handle_t *pUSARTHandle, uint8_t *pRxBuffer, uint32_t Len);
 
 void USART_IRQConfig(uint8_t IRQNumber, uint8_t EnorDi);
 
@@ -104,4 +113,7 @@ void USART_PriorityConfig(uint8_t IRQPriority,uint8_t IRQNumber);
 void USART_IRQHandle(USART_Handle_t *pUSARTHandle );
 
 uint8_t USART_GetStatusFlag(USART_RegDef_t*pSPIx, uint8_t FlagName);
+
+void USART_SendDataIt(USART_Handle_t *pUSARTHandle);
+void USART_RecieveDataIt(USART_Handle_t *pUSARTHandle);
 #endif /* INC_STM32F302XX_USART_DRIVER_H_ */

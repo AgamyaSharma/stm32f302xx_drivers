@@ -158,39 +158,40 @@ uint8_t USART_GetStatusFlag(USART_RegDef_t*pUSARTx, uint8_t FlagName){
 		 return FLAG_RESET;
 	 }
 }
-void USART_SendData(USART_Handle_t *pUSARTHandle, uint32_t Len){
+void USART_SendData(USART_Handle_t *pUSARTHandle, uint8_t *pTxBuffer, uint32_t Len){
 	while(Len > 0){
 		while(!(USART_GetStatusFlag(pUSARTHandle->pUSARTx, USART_TXE_FLAG)));
 		if(pUSARTHandle->USART_Config.USART_WordLength == USART_WL_7BIT){
-			(*((uint8_t*)&pUSARTHandle->pUSARTx->TDR)) = (*((uint8_t*)pUSARTHandle->pTxBuffer) & (0x7F) ) ;
-			pUSARTHandle->pTxBuffer = (((uint8_t*) pUSARTHandle->pTxBuffer) + 1);
+			(*((uint8_t*)&pUSARTHandle->pUSARTx->TDR)) = (*((uint8_t*)pTxBuffer) & (0x7F) ) ;
+			pTxBuffer = (((uint8_t*)pTxBuffer) + 1);
 			Len--;
 		}else if(pUSARTHandle->USART_Config.USART_WordLength == USART_WL_8BIT){
-			(*((uint8_t*)&pUSARTHandle->pUSARTx->TDR)) = (*((uint8_t*)pUSARTHandle->pTxBuffer)) ;
-			pUSARTHandle->pTxBuffer = (((uint8_t*)pUSARTHandle->pTxBuffer) + 1);
+			(*((uint8_t*)&pUSARTHandle->pUSARTx->TDR)) = (*((uint8_t*)pTxBuffer)) ;
+			pTxBuffer = (((uint8_t*)pTxBuffer) + 1);
 			Len--;
 		}else if(pUSARTHandle->USART_Config.USART_WordLength == USART_WL_9BIT){
-			(*((uint16_t*)&pUSARTHandle->pUSARTx->TDR)) = ((*((uint16_t*)pUSARTHandle->pTxBuffer) & (0x1FF))) ;
-			pUSARTHandle->pTxBuffer = (((uint16_t*) pUSARTHandle->pTxBuffer) + 1);
+			(*((uint16_t*)&pUSARTHandle->pUSARTx->TDR)) = ((*((uint16_t*)pTxBuffer) & (0x1FF))) ;
+			pTxBuffer = (((uint16_t*) pTxBuffer) + 1);
+			Len--;
 			Len--;
 	}
   }
 }
 
-void USART_ReceiveData(USART_Handle_t *pUSARTHandle, uint32_t Len ){
+void USART_RecieveveData(USART_Handle_t *pUSARTHandle, uint8_t *pRxBuffer, uint32_t Len, ){
 	while(Len > 0){
 			while(!(USART_GetStatusFlag(pUSARTHandle->pUSARTx, USART_RXE_FLAG)));
 			if(pUSARTHandle->USART_Config.USART_WordLength == USART_WL_7BIT){
-				(*((uint8_t*)pUSARTHandle->pRxBuffer)  ) = (*((uint8_t*)&pUSARTHandle->pUSARTx->RDR)& (0x7F)) ;
-				pUSARTHandle->pRxBuffer = (((uint8_t*) pUSARTHandle->pRxBuffer) + 1);
+				(*((uint8_t*)pRxBuffer)  ) = (*((uint8_t*)&pUSARTHandle->pUSARTx->RDR)& (0x7F)) ;
+				pRxBuffer = (((uint8_t*)pRxBuffer) + 1);
 				Len--;
 			}else if(pUSARTHandle->USART_Config.USART_WordLength == USART_WL_8BIT){
-				 (*((uint8_t*)pUSARTHandle->pRxBuffer)) = (*((uint8_t*)&pUSARTHandle->pUSARTx->RDR));
-				pUSARTHandle->pRxBuffer = (((uint8_t*)pUSARTHandle->pRxBuffer) + 1);
+				 (*((uint8_t*)pRxBuffer)) = (*((uint8_t*)&pUSARTHandle->pUSARTx->RDR));
+				pRxBuffer = (((uint8_t*)pRxBuffer) + 1);
 				Len--;
 			}else if(pUSARTHandle->USART_Config.USART_WordLength == USART_WL_9BIT){
-				  (*((uint16_t*)pUSARTHandle->pRxBuffer)) = ((*((uint16_t*)&pUSARTHandle->pUSARTx->RDR) & (0x1FF))) ;
-				pUSARTHandle->pRxBuffer = (((uint16_t*) pUSARTHandle->pRxBuffer) + 1);
+				  (*((uint16_t*)pRxBuffer)) = ((*((uint16_t*)&pUSARTHandle->pUSARTx->RDR) & (0x1FF))) ;
+				  pRxBuffer = (((uint16_t*)pRxBuffer) + 1);
 				Len--;
 				Len--;
 		}
@@ -236,3 +237,5 @@ void USART_PriorityConfig(uint8_t IRQPriority,uint8_t IRQNumber){
 	uint8_t shiftAmount =((8*iprxSection) + 4);
 	NVIC->IPR[iprx] |= (IRQPriority << (shiftAmount));
 }
+
+

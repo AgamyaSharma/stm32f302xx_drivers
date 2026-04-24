@@ -136,7 +136,7 @@ void SPI_SendData(SPI_RegDef_t *pSPIx, uint8_t *pTxBuffer, uint32_t Len){
 
 }
 
-void SPI_ReceiveData(SPI_RegDef_t *pSPIx, uint8_t *pRxBuffer, uint32_t Len){
+void SPI_RecieveData(SPI_RegDef_t *pSPIx, uint8_t *pRxBuffer, uint32_t Len){
 	while( Len > 0){
 			while((SPI_GetStatusFlag(pSPIx, SPI_RXNE_FLAG) == FLAG_RESET));
 				uint32_t CRRead = pSPIx->CR2;
@@ -208,7 +208,7 @@ void SPI_SendDataIT(SPI_Handle_t *pSPIHandle, uint8_t *pTxBuffer, uint32_t Len){
 	}
 }
 
-void SPI_ReceiveDataIT(SPI_Handle_t *pSPIHandle, uint8_t *pRxBuffer, uint32_t Len){
+void SPI_RecieveDataIT(SPI_Handle_t *pSPIHandle, uint8_t *pRxBuffer, uint32_t Len){
 	uint8_t state = pSPIHandle->RxState;
 		if(state != SPI_BUSY_IN_RX){
 			pSPIHandle->pRxBuffer = pRxBuffer;// these are global variables
