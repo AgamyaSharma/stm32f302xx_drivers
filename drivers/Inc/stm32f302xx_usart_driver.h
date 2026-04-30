@@ -6,8 +6,8 @@
 #include <stdint.h>
 #include "stm32f302xx.h"
 
-#define BUFFER_SIZE						64
-#define BUFFER_MASK						(BUFFER_SIZE - 1)
+#define BUFFER_SIZE							64
+#define BUFFER_MASK							(BUFFER_SIZE - 1)
 
 typedef struct{
 	uint8_t  USART_Mode;
@@ -23,11 +23,12 @@ typedef struct{
 }USART_Config_t;
 
 typedef struct{
-	USART_RegDef_t *pUSARTx;
-	USART_Config_t  USART_Config;
-	uint8_t        *pTxBuffer;
-	uint8_t		   *pRxBuffer;
-	USART_Buffer_t  CirBuf;
+	USART_RegDef_t    *pUSARTx;
+	USART_Config_t 	  USART_Config;
+	USART_Buffer_t    RxBuffer;
+	USART_Buffer_t    TxBuffer;
+	uint8_t 		  TxState;
+	uint8_t			  RxState;
 }USART_Handle_t;
 
 typedef struct{
@@ -92,7 +93,7 @@ typedef struct{
 #define USART_TXE_FLAG                  (1 << 7)
 #define USART_RXE_FLAG                  (1 << 5)
 
-#define BUFFER_SIZE						64
+
 
 
 
@@ -115,5 +116,10 @@ void USART_IRQHandle(USART_Handle_t *pUSARTHandle );
 uint8_t USART_GetStatusFlag(USART_RegDef_t*pSPIx, uint8_t FlagName);
 
 void USART_SendDataIt(USART_Handle_t *pUSARTHandle);
+
 void USART_RecieveDataIt(USART_Handle_t *pUSARTHandle);
+
+void USART_Buffer_Push(USART_Buffer_t *pBuffer, uint8_t tempData);
+
+uint8_t USART_Buffer_Pop(USART_Buffer_t *pBuffer, uint8_t *pdata);
 #endif /* INC_STM32F302XX_USART_DRIVER_H_ */

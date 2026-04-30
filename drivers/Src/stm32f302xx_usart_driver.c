@@ -238,4 +238,27 @@ void USART_PriorityConfig(uint8_t IRQPriority,uint8_t IRQNumber){
 	NVIC->IPR[iprx] |= (IRQPriority << (shiftAmount));
 }
 
+uint8_t USART_Buffer_Push(USART_Buffer_t *pBuffer, uint8_t tempData){
+	uint32_t NextHead = ((pBuffer->Head +1) & BUFFER_MASK);
 
+	if(NextHead == (pBuffer->Tail)){
+		pBuffer->Tail = ((pBuffer->Tail +1) & BUFFER_MASK);
+		pBuffer->Buffer[pBuffer->Head] = tempData;
+		pBuffer->Head = NextHead;
+
+
+	}else{
+		pBuffer->Buffer[pBuffer->Head] = tempData;
+		pBuffer->Head = NextHead;
+	}
+	return 1;
+}
+
+uint8_t USART_Buffer_Pop(USART_Buffer_t *pBuffer, uint8_t *pdata){
+	if((pBuffer->Head) == (pBuffer->Tail)){
+		return 0; //BUFFER EMPTY
+	}
+	*pdata = pBuffer->Buffer[pBuffer->Tail];
+	pBuffer->Tail = ((pBuffer->Tail +1) & BUFFER_MASK);
+	return 1;
+}
