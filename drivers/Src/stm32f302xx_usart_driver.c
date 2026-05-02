@@ -178,7 +178,7 @@ void USART_SendData(USART_Handle_t *pUSARTHandle, uint8_t *pTxBuffer, uint32_t L
   }
 }
 
-void USART_RecieveveData(USART_Handle_t *pUSARTHandle, uint8_t *pRxBuffer, uint32_t Len, ){
+void USART_RecieveveData(USART_Handle_t *pUSARTHandle, uint8_t *pRxBuffer, uint32_t Len){
 	while(Len > 0){
 			while(!(USART_GetStatusFlag(pUSARTHandle->pUSARTx, USART_RXE_FLAG)));
 			if(pUSARTHandle->USART_Config.USART_WordLength == USART_WL_7BIT){
@@ -238,17 +238,17 @@ void USART_PriorityConfig(uint8_t IRQPriority,uint8_t IRQNumber){
 	NVIC->IPR[iprx] |= (IRQPriority << (shiftAmount));
 }
 
-uint8_t USART_Buffer_Push(USART_Buffer_t *pBuffer, uint8_t tempData){
+uint8_t USART_Buffer_Push(USART_Buffer_t *pBuffer, uint8_t *tempData){
 	uint32_t NextHead = ((pBuffer->Head +1) & BUFFER_MASK);
 
 	if(NextHead == (pBuffer->Tail)){
 		pBuffer->Tail = ((pBuffer->Tail +1) & BUFFER_MASK);
-		pBuffer->Buffer[pBuffer->Head] = tempData;
+		pBuffer->Buffer[pBuffer->Head] = *tempData;
 		pBuffer->Head = NextHead;
 
 
 	}else{
-		pBuffer->Buffer[pBuffer->Head] = tempData;
+		pBuffer->Buffer[pBuffer->Head] = *tempData;
 		pBuffer->Head = NextHead;
 	}
 	return 1;
@@ -261,4 +261,71 @@ uint8_t USART_Buffer_Pop(USART_Buffer_t *pBuffer, uint8_t *pdata){
 	*pdata = pBuffer->Buffer[pBuffer->Tail];
 	pBuffer->Tail = ((pBuffer->Tail +1) & BUFFER_MASK);
 	return 1;
+}
+
+void USART_SendDataIt(USART_Handle_t *pUSARTHandle, uint8_t *pDataBuffer, uint32_t Len){
+	uint8_t state= pUSARTHandle->TxState;
+	if(state != USART_BUSY_IN_TX){
+		pUSARTHandle->TxState = USART_BUSY_IN_TX;
+		for(int i=0;i<=Len-1;i++){
+			uint8_t data = pDataBuffer[i];
+			USART_Buffer_Push( &(pUSARTHandle->TxBuffer), &data);
+		}
+	pUSARTHandle->pUSARTx->CR1 |= (1 << 7);
+
+	}
+}
+
+
+void USART_RecieveDataIt(USART_Handle_t *pUSARTHandle){
+	uint8_t state = pUSARTHandle->RxState;
+	if(state != USART_BUSY_IN_RX){
+		pUSARTHandle->RxState = USART_BUSY_IN_RX;
+		pUSARTHandle->pUSARTx->CR1 |= (1 << 5);
+	}else{
+		return;
+	}
+}
+
+void USART_IRQHandle(USART_Handle_t *pUSARTHandle ){
+	uint8_t temp1;
+	uint8_t temp2;
+	temp1 = pUSARTHandle->pUSARTx->CR1 & (1 << 7);
+	temp2 = pUSARTHandle->pUSARTx->ISR & (1 << 7);
+	if (temp1 && temp2){
+		usart_txe_interrupt_handle(pUSARTHandle);
+	}
+
+	temp1 = pUSARTHandle->pUSARTx->CR1 & (1 << 5);
+	temp2 = pUSARTHandle->pUSARTx->ISR & (1 << 5);
+	if(temp1 && temp2){
+		usart_rxne_interrupt_handle(pUSARTHandle);
+	}
+}
+
+static void usart_txe_interrupt_handle(USART_Handle_t *pUSARTHandle){
+	uint8_t temp1;
+	uint8_t status = USART_Buffer_Pop( &(pUSARTHandle->TxBuffer), &temp1);
+	if(status){
+		if(pUSARTHandle->USART_Config.USART_WordLength == USART_WL_7BIT){
+		(*((uint8_t*)&pUSARTHandle->pUSARTx->TDR)) = ((temp1) & (0x7F));
+
+		}else if(pUSARTHandle->USART_Config.USART_WordLength == USART_WL_8BIT){
+		(*((uint8_t*)&pUSARTHandle->pUSARTx->TDR)) = (temp1);
+		}
+	}else{
+		pUSARTHandle->pUSARTx->CR1 &= ~(1 << 7);
+	}
+}
+
+static void usart_rxne_interrupt_handle(USART_Handle_t *pUSARTHandle)
+{
+	uint8_t temp1;
+	if(pUSARTHandle->USART_Config.USART_WordLength == USART_WL_7BIT){
+			temp1= (*((uint8_t*)&pUSARTHandle->pUSARTx->RDR)& (0x7F));
+			USART_Buffer_Push(&(pUSARTHandle->RxBuffer), &temp1);
+	}else if(pUSARTHandle->USART_Config.USART_WordLength == USART_WL_8BIT){
+		    temp1 = (*((uint8_t*)&pUSARTHandle->pUSARTx->RDR));
+		    USART_Buffer_Push(&(pUSARTHandle->RxBuffer), &temp1);
+	}
 }

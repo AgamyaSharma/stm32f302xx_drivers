@@ -23,6 +23,12 @@ typedef struct{
 }USART_Config_t;
 
 typedef struct{
+	volatile uint8_t Buffer[BUFFER_SIZE];
+	volatile uint32_t Head;
+	volatile uint32_t Tail;
+}USART_Buffer_t;
+
+typedef struct{
 	USART_RegDef_t    *pUSARTx;
 	USART_Config_t 	  USART_Config;
 	USART_Buffer_t    RxBuffer;
@@ -31,11 +37,7 @@ typedef struct{
 	uint8_t			  RxState;
 }USART_Handle_t;
 
-typedef struct{
-	volatile uint8_t Buffer[BUFFER_SIZE];
-	volatile uint32_t Head;
-	volatile uint32_t Tail;
-}USART_Buffer_t;
+
 
 
 #define USART1_PCLK_ENABLE()		(RCC->APB2ENR |= (1 << 14))
@@ -81,6 +83,8 @@ typedef struct{
 #define USART_OVER_8				0
 #define USART_OVER_16				1
 
+#define USART_BUSY_IN_TX			1
+#define USART_BUSY_IN_RX			2
 
 #define IS_USART_MODE(MODE)				(MODE <= USART_MODE_DUPLEX)
 #define IS_USART_WL_BITS(BITS)			(BITS <= USART_WL_9BIT)
@@ -115,11 +119,14 @@ void USART_IRQHandle(USART_Handle_t *pUSARTHandle );
 
 uint8_t USART_GetStatusFlag(USART_RegDef_t*pSPIx, uint8_t FlagName);
 
-void USART_SendDataIt(USART_Handle_t *pUSARTHandle);
+uint8_t USART_Buffer_Push(USART_Buffer_t *pBuffer, uint8_t *tempData);
 
 void USART_RecieveDataIt(USART_Handle_t *pUSARTHandle);
 
-void USART_Buffer_Push(USART_Buffer_t *pBuffer, uint8_t tempData);
-
 uint8_t USART_Buffer_Pop(USART_Buffer_t *pBuffer, uint8_t *pdata);
+
+static void usart_rxne_interrupt_handle(USART_Handle_t *pUSARTHandle);
+
+static void usart_txe_interrupt_handle(USART_Handle_t *pUSARTHandle);
+
 #endif /* INC_STM32F302XX_USART_DRIVER_H_ */
