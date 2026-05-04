@@ -110,18 +110,18 @@ typedef struct {
 }RCC_RegDef_t;
 
 typedef struct {
-	uint32_t IMR1;
-	uint32_t EMR1;
-	uint32_t RTSR1;
-	uint32_t FTSR1;
-	uint32_t SWIER1;
-	uint32_t PR1;
-	uint32_t IMR2;
-	uint32_t EMR2;
-	uint32_t RTSR2;
-	uint32_t FTSR2;
-	uint32_t SWIER2;
-	uint32_t PR2;
+	volatile uint32_t IMR1;
+	volatile uint32_t EMR1;
+	volatile uint32_t RTSR1;
+	volatile uint32_t FTSR1;
+	volatile uint32_t SWIER1;
+	volatile uint32_t PR1;
+	volatile uint32_t IMR2;
+	volatile uint32_t EMR2;
+	volatile uint32_t RTSR2;
+	volatile uint32_t FTSR2;
+	volatile uint32_t SWIER2;
+	volatile uint32_t PR2;
 
 }EXTI_RegDef_t;
 
@@ -151,30 +151,62 @@ typedef struct{
 }SYSCFG_RegDef_t;
 
 typedef struct{
-	uint32_t CR1;
-	uint32_t CR2;
-	uint32_t SR;
-	uint32_t DR;
-	uint32_t CRCPR;
-	uint32_t RXCRCR;
-	uint32_t TXCRCR;
-	uint32_t I2SCFGR;
-	uint32_t I2CPR;
+	volatile uint32_t CR1;
+	volatile uint32_t CR2;
+	volatile uint32_t SR;
+	volatile uint32_t DR;
+	volatile uint32_t CRCPR;
+	volatile uint32_t RXCRCR;
+	volatile uint32_t TXCRCR;
+	volatile uint32_t I2SCFGR;
+	volatile uint32_t I2CPR;
 }SPI_RegDef_t;
 
 typedef struct{
-	uint32_t	CR1;
-	uint32_t	CR2;
-	uint32_t	CR3;
-	uint32_t	BRR;
-	uint32_t	GTPR;
-	uint32_t	RTOR;
-	uint32_t	RQR;
-	uint32_t	ISR;
-	uint32_t	ICR;
-	uint32_t	RDR;
-	uint32_t	TDR;
+	volatile uint32_t	CR1;
+	volatile uint32_t	CR2;
+	volatile uint32_t	CR3;
+	volatile uint32_t	BRR;
+	volatile uint32_t	GTPR;
+	volatile uint32_t	RTOR;
+	volatile uint32_t	RQR;
+	volatile uint32_t	ISR;
+	volatile uint32_t	ICR;
+	volatile uint32_t	RDR;
+	volatile uint32_t	TDR;
 }USART_RegDef_t;
+
+typedef struct{
+	volatile uint32_t	ISR;
+	volatile uint32_t	IER;
+	volatile uint32_t	CR;
+	volatile uint32_t	CFGR;
+	volatile uint32_t	SMPR[2];
+	volatile uint32_t	TR1;
+	volatile uint32_t	TR2;
+	volatile uint32_t	TR3;
+	volatile uint32_t	SQR[4];
+	volatile uint32_t	DR;
+	const uint32_t		RESERVED;
+	volatile uint32_t	JSQR;
+	const uint32_t		RESERVED;
+	volatile uint32_t	OFR[4];
+	const uint32_t		RESERVED;
+	volatile uint32_t	JDR[4];
+	const uint32_t		RESERVED;
+	volatile uint32_t	AWD2CR;
+	volatile uint32_t	AWD3CR;
+	const uint32_t		RESERVED;
+	volatile uint32_t	DIFSEL;
+	volatile uint32_t	CALFACT;
+}ADC_RegDef_t;
+
+typedef struct{
+	volatile uint32_t	CSR;
+	const uint32_t 		RESERVED;
+	volatile uint32_t	CCR;
+	volatile uint32_t	CDR;
+}ADC_CCR_RegDef_t;
 
 typedef struct {
     volatile uint32_t ISER[8];
@@ -252,9 +284,12 @@ typedef struct {
 #define SPI2								((SPI_RegDef_t*)SPI2_BASE_ADDR)
 #define SPI3								((SPI_RegDef_t*)SPI3_BASE_ADDR)
 
-#define USART1						((USART_RegDef_t*)USART1_BASE_ADDR)
-#define USART2						((USART_RegDef_t*)USART2_BASE_ADDR)
-#define USART3						((USART_RegDef_t*)USART3_BASE_ADDR)
+#define USART1								((USART_RegDef_t*)USART1_BASE_ADDR)
+#define USART2								((USART_RegDef_t*)USART2_BASE_ADDR)
+#define USART3								((USART_RegDef_t*)USART3_BASE_ADDR)
+
+#define ADC1								((ADC_RegDef_t*)ADC1_BASE_ADDR)
+#define ADCCRR								((ADC_CRR_RegDef_t*)(ADC1_BASE_ADDR+0x300))
 
 
 
