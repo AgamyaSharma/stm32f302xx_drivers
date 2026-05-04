@@ -257,7 +257,7 @@ static void spi_txe_interrupt_handle(SPI_Handle_t *pSPIHandle){
 					pSPIHandle->TxLen--;
 					pSPIHandle->pTxBuffer = (((uint8_t*) pSPIHandle->pTxBuffer) + 1);
 				}
-				if(!pSPIHandle->TxLen){
+				if(!(pSPIHandle->TxLen)){
 					SPI_CloseTransmission(pSPIHandle);
 					SPI_ApplicationEventCallback(pSPIHandle,SPI_EVENT_TX_CMPLT);
 				}
@@ -281,7 +281,7 @@ static void spi_rxnxe_interrupt_handle(SPI_Handle_t *pSPIHandle){
 						pSPIHandle->pRxBuffer = (((uint8_t*) pSPIHandle->pRxBuffer) + 1);
 					}
 
-					if(!pSPIHandle->RxLen){
+					if(!(pSPIHandle->RxLen)){
 						SPI_CloseReception(pSPIHandle);
 						SPI_ApplicationEventCallback(pSPIHandle,SPI_EVENT_RX_CMPLT);
 				    }

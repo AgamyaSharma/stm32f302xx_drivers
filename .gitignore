@@ -57,3 +57,5 @@ obj/
 Startup/startup_stm32f302r8tx.s
 Src/syscalls.c
 Src/sysmem.c
+Src/main.c
+Src/main.c

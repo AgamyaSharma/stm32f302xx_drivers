@@ -315,6 +315,7 @@ static void usart_txe_interrupt_handle(USART_Handle_t *pUSARTHandle){
 		}
 	}else{
 		pUSARTHandle->pUSARTx->CR1 &= ~(1 << 7);
+		USART_ApplicationEventCallback(pUSARTHandle, USART_EVENT_TX_CMPLT);
 	}
 }
 
@@ -328,4 +329,8 @@ static void usart_rxne_interrupt_handle(USART_Handle_t *pUSARTHandle)
 		    temp1 = (*((uint8_t*)&pUSARTHandle->pUSARTx->RDR));
 		    USART_Buffer_Push(&(pUSARTHandle->RxBuffer), &temp1);
 	}
+}
+
+__attribute__((weak)) void USART_ApplicationEventCallback(USART_Handle_t *pUSARTHandle,uint8_t APPEv){
+
 }

@@ -97,6 +97,9 @@ typedef struct{
 #define USART_TXE_FLAG                  (1 << 7)
 #define USART_RXE_FLAG                  (1 << 5)
 
+#define USART_EVENT_TX_CMPLT			1
+#define USART_EVENT_RX_CMPLT			2
+
 
 
 
@@ -128,5 +131,8 @@ uint8_t USART_Buffer_Pop(USART_Buffer_t *pBuffer, uint8_t *pdata);
 static void usart_rxne_interrupt_handle(USART_Handle_t *pUSARTHandle);
 
 static void usart_txe_interrupt_handle(USART_Handle_t *pUSARTHandle);
+
+__attribute__((weak)) void USART_ApplicationEventCallback(USART_Handle_t *pUSARTHandle,uint8_t APPEv);
+
 
 #endif /* INC_STM32F302XX_USART_DRIVER_H_ */
