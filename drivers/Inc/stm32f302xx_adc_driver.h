@@ -22,6 +22,21 @@ typedef struct{
 typedef struct{
 	ADC_RegDef_t 	*pADCx;
 	ADC_Config_t 	ADC_CONFIG;
-};
+}ADC_Handle_t;
 
+
+
+void ADC_Innit(ADC_Handle_t *pADCHandle);
+
+void ADC_PeriClockControl(ADC_RegDef_t *pADCx, uint8_t EnOrDi);
+
+void ADC_Deinnit(ADC_Handle_t *pADCHandle);
+
+
+
+#define ADC_CAL_DIF						1
+#define ADC_CAL_SINGLE					0
+
+#define ADC_MODE_CONT_CONVERSION		1
+#define ADC_MODE_SINGLE_CONVERSION		0
 #endif /* INC_STM32F302XX_ADC_DRIVER_H_ */
