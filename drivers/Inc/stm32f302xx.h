@@ -8,6 +8,7 @@
 #define INC_STM32F302XX_H_
 #include <stdint.h>
 #include <stddef.h>
+
 /*
  *  base addresses of Flash and SRAM memories
  */
@@ -187,16 +188,16 @@ typedef struct{
 	volatile uint32_t	TR3;
 	volatile uint32_t	SQR[4];
 	volatile uint32_t	DR;
-	const uint32_t		RESERVED;
+	const uint32_t		RESERVED1;
 	volatile uint32_t	JSQR;
-	const uint32_t		RESERVED;
+	const uint32_t		RESERVED2;
 	volatile uint32_t	OFR[4];
-	const uint32_t		RESERVED;
+	const uint32_t		RESERVED3;
 	volatile uint32_t	JDR[4];
-	const uint32_t		RESERVED;
+	const uint32_t		RESERVED4;
 	volatile uint32_t	AWD2CR;
 	volatile uint32_t	AWD3CR;
-	const uint32_t		RESERVED;
+	const uint32_t		RESERVED5;
 	volatile uint32_t	DIFSEL;
 	volatile uint32_t	CALFACT;
 }ADC_RegDef_t;
@@ -291,7 +292,10 @@ typedef struct {
 #define ADC1								((ADC_RegDef_t*)ADC1_BASE_ADDR)
 #define ADCCRR								((ADC_CRR_RegDef_t*)(ADC1_BASE_ADDR+0x300))
 
+#define ADC_PCLK_ENABLE()					RCC->AHBENR |= (1 << 28)
+#define ADC_PCLK_DISABLE()					RCC->AHBENR &= ~(1 << 28)
 
+#define ADC_REG_RESET()						do{(RCC->AHBRSTR |= (1<<28)); (RCC->AHBRSTR &= ~(1<<28));}while(0)
 
 #define ENABLE 								1
 #define DISABLE 							0
@@ -303,5 +307,4 @@ typedef struct {
 #define FLAG_RESET							RESET
 #define FLAG_SET							SET
 
-#define	SPI_CR1_CP
 #endif /* INC_STM32F302XX_H_ */
