@@ -36,7 +36,11 @@ void ADC_PeriClockControl(ADC_RegDef_t *pADCx, uint8_t EnOrDi);
 
 void ADC_Deinnit(ADC_Handle_t *pADCHandle);
 
+void ADC_StartConversion(ADC_RegDef_t *pADCx);
 
+void ADC_RecieveData(ADC_Handle_t *pADCHandle);
+
+void ADC_RecieveDataIT(ADC_Handle_t *pADCHandle);
 
 #define ADC_CAL_DIF						1
 #define ADC_CAL_SINGLE					0
@@ -56,4 +60,36 @@ void ADC_Deinnit(ADC_Handle_t *pADCHandle);
 
 #define ADC_OVRMODE_ENABLE				1
 #define ADC_OVRMODE_DISABLE             0
+
+#define ADC_SMP_1_5						0
+#define ADC_SMP_2_5						1
+#define ADC_SMP_4_5						2
+#define ADC_SMP_7_5						3
+#define ADC_SMP_19_5					4
+#define ADC_SMP_61_5					5
+#define ADC_SMP_181_5					6
+#define ADC_SMP_601_5					7
+
+#define ADC_EXTEN_DISABLED          	0
+#define ADC_EXTEN_RISING_EDGE      	 	1
+#define ADC_EXTEN_FALLING_EDGE      	2
+#define ADC_EXTEN_BOTH_EDGES        	3
+
+#define ADC_EXTSEL_TIM1_CC1         0x00
+#define ADC_EXTSEL_TIM1_CC2         0x01
+#define ADC_EXTSEL_TIM1_CC3         0x02
+#define ADC_EXTSEL_TIM2_CC2         0x03
+#define ADC_EXTSEL_TIM3_TRGO        0x04
+#define ADC_EXTSEL_TIM4_CC4         0x05
+#define ADC_EXTSEL_EXTI_11          0x06
+// 0x07 (0111) is Reserved
+// 0x08 (1000) is Reserved
+#define ADC_EXTSEL_TIM1_TRGO        0x09
+#define ADC_EXTSEL_TIM1_TRGO2       0x0A
+#define ADC_EXTSEL_TIM2_TRGO        0x0B
+#define ADC_EXTSEL_TIM4_TRGO        0x0C
+#define ADC_EXTSEL_TIM6_TRGO        0x0D
+#define ADC_EXTSEL_TIM15_TRGO       0x0E
+#define ADC_EXTSEL_TIM3_CC4         0x0F
+
 #endif /* INC_STM32F302XX_ADC_DRIVER_H_ */

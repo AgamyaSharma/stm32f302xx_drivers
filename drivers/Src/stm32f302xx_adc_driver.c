@@ -21,7 +21,6 @@ void ADC_Innit(ADC_Handle_t *pADCHandle){
 	pADCHandle->pADCx->CR &= ~(1 << 30);
 	switch(pADCHandle->ADC_CONFIG.ADC_Calibration){
 		case ADC_CAL_DIF:
-			pADCHandle->pADCx->CR &= ~(1 << 30);
 			pADCHandle->pADCx->CR |= (1 << 30);
 			break;
 		case ADC_CAL_SINGLE:
@@ -78,6 +77,36 @@ void ADC_Innit(ADC_Handle_t *pADCHandle){
 				}
 			break;
 	}
+
+	pADCHandle->pADCx->SQR[0] &= ~(0xF);
+	pADCHandle->pADCx->SQR[0] |= ((pADCHandle->ADC_CONFIG.SequenceLen) - 1);
+
+	for(int i = 0; i <= ((pADCHandle->ADC_CONFIG.SequenceLen) - 1); i ++){
+
+		uint8_t temp1;
+		uint8_t temp2;
+		uint8_t currentChannel = pADCHandle->ADC_CONFIG.pSequence[i].Channel;
+		uint8_t currentSampleTime = pADCHandle->ADC_CONFIG.pSequence[i].SampleTime;
+
+
+			if(currentChannel <= 9){
+				temp1 = (currentChannel*3);
+				pADCHandle->pADCx->SMPR[0] &= ~(0x7 << temp1);
+				pADCHandle->pADCx->SMPR[0] |= (currentSampleTime << temp1);
+			}else if(currentChannel > 9){
+				temp1 = (currentChannel - 10)*3;
+				pADCHandle->pADCx->SMPR[0] &= ~(0x7 << temp1);
+				pADCHandle->pADCx->SMPR[0] |= (currentSampleTime << temp1);
+			}
+
+
+		temp1 = (i + 1)/5;
+		temp2 = (((i + 1) % 5)*6);
+		pADCHandle->pADCx->SQR[temp1] |= temp2;
+	}
+
+	pADCHandle->pADCx->CFGR |= (pADCHandle ->ADC_CONFIG.ADC_ExtTrig_Edge << 10);
+	pADCHandle->pADCx->CFGR |= (pADCHandle ->ADC_CONFIG.ADC_ExtTrig_Source << 6);
 }
 void ADC_Deinnit(ADC_Handle_t *pADCHandle){
 	 ADC_REG_RESET();
