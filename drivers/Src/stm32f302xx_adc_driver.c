@@ -18,43 +18,66 @@ void ADC_Innit(ADC_Handle_t *pADCHandle){
 	    	__asm("nop");
 
 	}
-	if(pADCHandle->ADC_CONFIG.ADC_Calibration == ADC_CAL_DIF){
-		pADCHandle->pADCx->CR &= ~(1 << 30);
-		pADCHandle->pADCx->CR |= (1 << 30);
-	}else{
-		pADCHandle->pADCx->CR &= ~(1 << 30);
+	pADCHandle->pADCx->CR &= ~(1 << 30);
+	switch(pADCHandle->ADC_CONFIG.ADC_Calibration){
+		case ADC_CAL_DIF:
+			pADCHandle->pADCx->CR &= ~(1 << 30);
+			pADCHandle->pADCx->CR |= (1 << 30);
+			break;
+		case ADC_CAL_SINGLE:
+			break;
 	}
 
 	pADCHandle->pADCx->CR |= (1 << 31);
 	while(!(pADCHandle->pADCx->ISR & 1));
 
-	if(pADCHandle->ADC_CONFIG.ADC_DataAlign == ADC_DATA_LEFT_ALIGN){
-		pADCHandle->pADCx->CFGR |= (1 << 5);
-	}else{
-		pADCHandle->pADCx->CFGR &= ~(1 << 5);
+	pADCHandle->pADCx->CFGR &= ~(1 << 5);
+	switch(pADCHandle->ADC_CONFIG.ADC_DataAlign){
+		case ADC_DATA_LEFT_ALIGN:
+			pADCHandle->pADCx->CFGR |= (1 << 5);
+			break;
+		case ADC_DATA_RIGHT_ALIGN:
+			break;
 	}
 
-	if(pADCHandle->ADC_CONFIG.ADC_DataRes == ADC_DATA_RES_12BIT	){
-		pADCHandle->pADCx->CFGR &= ~(0x3 << 3);
-	}else if(pADCHandle->ADC_CONFIG.ADC_DataRes == ADC_DATA_RES_10BIT){
-		pADCHandle->pADCx->CFGR &= ~(0x3 << 3);
-		pADCHandle->pADCx->CFGR |= (1 << 3);
-	}else if(pADCHandle->ADC_CONFIG.ADC_DataRes == ADC_DATA_RES_8BIT){
-		pADCHandle->pADCx->CFGR &= ~(0x3 << 3);
-		pADCHandle->pADCx->CFGR |= (2 << 3);
-	}else if(pADCHandle->ADC_CONFIG.ADC_DataRes == ADC_DATA_RES_6BIT){
-		pADCHandle->pADCx->CFGR &= ~(0x3 << 3);
-		pADCHandle->pADCx->CFGR |= (3 << 3);
+	pADCHandle->pADCx->CFGR &= ~(0x3 << 3);
+	switch(pADCHandle->ADC_CONFIG.ADC_DataRes){
+		case ADC_DATA_RES_12BIT:
+			break;
+		case ADC_DATA_RES_10BIT:
+			pADCHandle->pADCx->CFGR |= (1 << 3);
+			break;
+		case ADC_DATA_RES_8BIT:
+			pADCHandle->pADCx->CFGR |= (2 << 3);
+			break;
+		case ADC_DATA_RES_6BIT:
+			pADCHandle->pADCx->CFGR |= (3 << 3);
+			break;
 	}
 
-	if(pADCHandle->ADC_CONFIG.ADC_OVRhandle == ADC_OVRMODE_ENABLE){
-		pADCHandle->pADCx->CFGR &= ~(1 << 12);
-		pADCHandle->pADCx->CFGR |= (1 << 12);
-	}else{
-		pADCHandle->pADCx->CFGR &= ~(1 << 12);
+	pADCHandle->pADCx->CFGR &= ~(1 << 12);
+	switch(pADCHandle->ADC_CONFIG.ADC_OVRhandle){
+		case ADC_OVRMODE_ENABLE:
+			pADCHandle->pADCx->CFGR |= (1 << 12);
+			break;
+		case ADC_OVRMODE_DISABLE:
+			break;
 	}
 
-
+	pADCHandle->pADCx->CFGR &= ~((1 << 16) | (1 << 13));
+	switch (pADCHandle->ADC_CONFIG.ADC_ConversionMode){
+		case ADC_MODE_SINGLE_CONVERSION:
+			break;
+		case ADC_MODE_CONT_CONVERSION:
+			pADCHandle->pADCx->CFGR |= (1 << 13);
+			break;
+		case ADC_MODE_DISCON_CONVERSION:
+				pADCHandle->pADCx->CFGR |= (1 << 16);
+				if(pADCHandle->ADC_CONFIG.Discon_ChunkSize <= 8){
+					pADCHandle->pADCx->CFGR |= (pADCHandle->ADC_CONFIG.Discon_ChunkSize << 17);
+				}
+			break;
+	}
 }
 void ADC_Deinnit(ADC_Handle_t *pADCHandle){
 	 ADC_REG_RESET();
