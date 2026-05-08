@@ -38,7 +38,9 @@ void ADC_Deinnit(ADC_Handle_t *pADCHandle);
 
 void ADC_StartConversion(ADC_RegDef_t *pADCx);
 
-void ADC_RecieveData(ADC_Handle_t *pADCHandle);
+void ADC_StopConversion(ADC_RegDef_t *pADCx);
+
+void ADC_RecieveData(ADC_Handle_t *pADCHandle, uint16_t *pBuffer);
 
 void ADC_RecieveDataIT(ADC_Handle_t *pADCHandle);
 

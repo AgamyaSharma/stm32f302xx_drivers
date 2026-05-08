@@ -108,6 +108,40 @@ void ADC_Innit(ADC_Handle_t *pADCHandle){
 	pADCHandle->pADCx->CFGR |= (pADCHandle ->ADC_CONFIG.ADC_ExtTrig_Edge << 10);
 	pADCHandle->pADCx->CFGR |= (pADCHandle ->ADC_CONFIG.ADC_ExtTrig_Source << 6);
 }
+
+
+void ADC_StartConversion(ADC_RegDef_t *pADCx){
+	uint8_t temp1 = (pADCx->ISR & 1);
+	if(temp1){
+		pADCx->CR = (1 << 2);
+	}
+}
+
+void ADC_StopConversion(ADC_RegDef_t *pADCx){
+	if(pADCx->CR & (1 << 2)){
+		pADCx->CR = (1 << 4);
+		while(!((pADCx->CR) & (1 << 4)));
+	}
+	if(pADCx->CR & 1 << 0){
+		pADCx->CR = (1 << 1);
+		while(((pADCx->CR) & (1 << 0)));
+	}
+
+
+}
+
+void ADC_RecieveData(ADC_Handle_t *pADCHandle, uint16_t *pBuffer){
+	uint8_t Len = pADCHandle->ADC_CONFIG.SequenceLen;
+	while ( Len > 0){
+		while(!(pADCHandle->pADCx->ISR & (1 << 2)));
+		*pBuffer = pADCHandle->pADCx->DR;
+		pBuffer += 1;
+		Len--;
+
+	}
+
+}
+
 void ADC_Deinnit(ADC_Handle_t *pADCHandle){
 	 ADC_REG_RESET();
 	 ADC_PCLK_DISABLE();
