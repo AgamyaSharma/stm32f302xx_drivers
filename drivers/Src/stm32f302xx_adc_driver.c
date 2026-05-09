@@ -11,6 +11,11 @@ void ADC_PeriCloclControl(ADC_RegDef_t *pADCx, uint8_t EnOrDi){
 	}
 }
 
+void ADC_Deinnit(ADC_Handle_t *pADCHandle){
+	 ADC_REG_RESET();
+	 ADC_PCLK_DISABLE();
+}
+
 void ADC_Innit(ADC_Handle_t *pADCHandle){
 	pADCHandle->pADCx->CR &= ~(0x3 << 28);
 	pADCHandle->pADCx->CR |= (1 << 28);
@@ -130,19 +135,73 @@ void ADC_StopConversion(ADC_RegDef_t *pADCx){
 
 }
 
-void ADC_RecieveData(ADC_Handle_t *pADCHandle, uint16_t *pBuffer){
+void ADC_RecieveData(ADC_Handle_t *pADCHandle){
 	uint8_t Len = pADCHandle->ADC_CONFIG.SequenceLen;
 	while ( Len > 0){
-		while(!(pADCHandle->pADCx->ISR & (1 << 2)));
-		*pBuffer = pADCHandle->pADCx->DR;
-		pBuffer += 1;
+		while(!(pADCHandle->pADCx->ISR & (1 << 2)));  // TODO: Add a TimeOut logic
+		*(pADCHandle->pADCBuffer) = pADCHandle->pADCx->DR;
+		pADCHandle->pADCBuffer += 1;
 		Len--;
 
 	}
 
 }
 
-void ADC_Deinnit(ADC_Handle_t *pADCHandle){
-	 ADC_REG_RESET();
-	 ADC_PCLK_DISABLE();
+void ADC_IRQConfig(uint8_t IRQNumber, uint8_t EnorDi){
+	if(EnorDi== ENABLE){
+		if(IRQNumber <=31){
+
+			NVIC->ISER[0] |= (1<< IRQNumber);
+
+		}else if((IRQNumber > 31) && (IRQNumber <=63)){
+
+			NVIC->ISER[1] |= (1<< IRQNumber % 32);
+
+		}else if((IRQNumber > 63) && (IRQNumber <=95)){
+
+			NVIC->ISER[2] |= (1<< (IRQNumber % 64));
+
+		}
+
+	}else {
+		if(IRQNumber <=31){
+
+			NVIC->ICER[0] |= (1<<IRQNumber);
+		}else if(IRQNumber > 31 && IRQNumber <=63){
+
+			NVIC->ICER[1] |= (1<<(IRQNumber % 32));
+		}else if(IRQNumber > 63 && IRQNumber <=95){
+
+			NVIC->ICER[2] |= (1<<(IRQNumber % 64));
+
+		}
+
+	}
+
 }
+
+void ADC_PriorityConfig(uint8_t IRQPriority,uint8_t IRQNumber){
+	uint8_t iprx = (IRQNumber / 4);
+	uint8_t iprxSection = (IRQNumber % 4);
+	uint8_t shiftAmount =((8*iprxSection) + 4);
+	NVIC->IPR[iprx] |= (IRQPriority << (shiftAmount));
+}
+
+void ADC_RecieveDataIT(ADC_Handle_t *pADCHandle){
+	if(pADCHandle->ADC_State == ADC_BUSY){
+		return;
+	}
+	pADCHandle->ADC_State = ADC_BUSY;
+	pADCHandle->pADCx->IER |= (1 << 2);
+}
+
+void ADC_IRQHandle(ADC_Handle_t *pADCHandle){
+	uint8_t temp1;
+	uint8_t temp2;
+	temp1 = (pADCHandle->pADCx->IER & (1 << 2));
+	temp2 = (pADCHandle->pADCx->ISR & (1 << 2));
+	if(temp1 && temp2){
+		adc_rxne_interrupt_handle(pADCHandle);
+	}
+}
+

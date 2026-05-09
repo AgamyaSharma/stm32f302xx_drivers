@@ -26,6 +26,8 @@ typedef struct{
 typedef struct{
 	ADC_RegDef_t 	*pADCx;
 	ADC_Config_t 	ADC_CONFIG;
+	uint8_t			ADC_State;
+	uint16_t		*pADCBuffer;
 }ADC_Handle_t;
 
 
@@ -40,9 +42,15 @@ void ADC_StartConversion(ADC_RegDef_t *pADCx);
 
 void ADC_StopConversion(ADC_RegDef_t *pADCx);
 
-void ADC_RecieveData(ADC_Handle_t *pADCHandle, uint16_t *pBuffer);
+void ADC_RecieveData(ADC_Handle_t *pADCHandle);
+
+static void adc_rxne_interrupt_handle(ADC_Handle_t *pADCHandle);
 
 void ADC_RecieveDataIT(ADC_Handle_t *pADCHandle);
+
+void ADC_IRQConfig(uint8_t IRQNumber, uint8_t EnorDi);
+
+void ADC_PriorityConfig(uint8_t IRQPriority,uint8_t IRQNumber);
 
 #define ADC_CAL_DIF						1
 #define ADC_CAL_SINGLE					0
@@ -93,5 +101,7 @@ void ADC_RecieveDataIT(ADC_Handle_t *pADCHandle);
 #define ADC_EXTSEL_TIM6_TRGO        0x0D
 #define ADC_EXTSEL_TIM15_TRGO       0x0E
 #define ADC_EXTSEL_TIM3_CC4         0x0F
+
+#define ADC_BUSY					1
 
 #endif /* INC_STM32F302XX_ADC_DRIVER_H_ */

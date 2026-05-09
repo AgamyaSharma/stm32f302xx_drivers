@@ -319,8 +319,7 @@ static void usart_txe_interrupt_handle(USART_Handle_t *pUSARTHandle){
 	}
 }
 
-static void usart_rxne_interrupt_handle(USART_Handle_t *pUSARTHandle)
-{
+static void usart_rxne_interrupt_handle(USART_Handle_t *pUSARTHandle){
 	uint8_t temp1;
 	if(pUSARTHandle->USART_Config.USART_WordLength == USART_WL_7BIT){
 			temp1= (*((uint8_t*)&pUSARTHandle->pUSARTx->RDR)& (0x7F));
