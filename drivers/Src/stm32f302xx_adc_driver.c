@@ -205,3 +205,21 @@ void ADC_IRQHandle(ADC_Handle_t *pADCHandle){
 	}
 }
 
+static void adc_rxne_interrupt_handle(ADC_Handle_t *pADCHandle){
+	uint32_t temp1;
+	pADCHandle->pADCBuffer[pADCHandle->RxLen] = pADCHandle->pADCx->DR;
+	(pADCHandle->RxLen)++;
+
+	temp1 = pADCHandle->pADCx->ISR & (1 << 3);
+	if(temp1){
+		pADCHandle->RxLen = 0;
+		pADCHandle->pADCx->ISR = (1 << 3);
+	}
+
+	ADC_ApplicationEventCallback(pADCHandle, ADC_EVENT_EOC);
+}
+
+__attribute__((weak)) void ADC_ApplicationEventCallback(ADC_Handle_t *pADCHandle,uint8_t APPEv){
+
+
+}

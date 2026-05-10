@@ -28,6 +28,7 @@ typedef struct{
 	ADC_Config_t 	ADC_CONFIG;
 	uint8_t			ADC_State;
 	uint16_t		*pADCBuffer;
+	uint8_t			RxLen;
 }ADC_Handle_t;
 
 
@@ -51,6 +52,8 @@ void ADC_RecieveDataIT(ADC_Handle_t *pADCHandle);
 void ADC_IRQConfig(uint8_t IRQNumber, uint8_t EnorDi);
 
 void ADC_PriorityConfig(uint8_t IRQPriority,uint8_t IRQNumber);
+
+__attribute__((weak)) void ADC_ApplicationEventCallback(ADC_Handle_t *pADCHandle,uint8_t APPEv);
 
 #define ADC_CAL_DIF						1
 #define ADC_CAL_SINGLE					0
@@ -103,5 +106,7 @@ void ADC_PriorityConfig(uint8_t IRQPriority,uint8_t IRQNumber);
 #define ADC_EXTSEL_TIM3_CC4         0x0F
 
 #define ADC_BUSY					1
+
+#define ADC_EVENT_EOC				1
 
 #endif /* INC_STM32F302XX_ADC_DRIVER_H_ */
