@@ -1,6 +1,6 @@
 #ifndef INC_STM32F302XX_ADC_DRIVER_H_
 #define INC_STM32F302XX_ADC_DRIVER_H_
-#include <stdio.h>
+
 #include <stdint.h>
 #include "stm32f302xx.h"
 
@@ -45,7 +45,7 @@ void ADC_StopConversion(ADC_RegDef_t *pADCx);
 
 void ADC_RecieveData(ADC_Handle_t *pADCHandle);
 
-static void adc_rxne_interrupt_handle(ADC_Handle_t *pADCHandle);
+static void adc_eoc_interrupt_handle(ADC_Handle_t *pADCHandle);
 
 void ADC_RecieveDataIT(ADC_Handle_t *pADCHandle);
 

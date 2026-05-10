@@ -205,7 +205,7 @@ void ADC_IRQHandle(ADC_Handle_t *pADCHandle){
 	}
 }
 
-static void adc_rxne_interrupt_handle(ADC_Handle_t *pADCHandle){
+static void adc_eoc_interrupt_handle(ADC_Handle_t *pADCHandle){
 	uint32_t temp1;
 	pADCHandle->pADCBuffer[pADCHandle->RxLen] = pADCHandle->pADCx->DR;
 	(pADCHandle->RxLen)++;

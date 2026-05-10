@@ -190,21 +190,21 @@ typedef struct{
 	volatile uint32_t	DR;
 	const uint32_t		RESERVED1;
 	volatile uint32_t	JSQR;
-	const uint32_t		RESERVED2;
+	uint32_t 			RESERVED2;
 	volatile uint32_t	OFR[4];
-	const uint32_t		RESERVED3;
+	uint32_t 			RESERVED3;
 	volatile uint32_t	JDR[4];
-	const uint32_t		RESERVED4;
+	uint32_t 			RESERVED4;
 	volatile uint32_t	AWD2CR;
 	volatile uint32_t	AWD3CR;
-	const uint32_t		RESERVED5;
+	uint32_t 			RESERVED5;
 	volatile uint32_t	DIFSEL;
 	volatile uint32_t	CALFACT;
 }ADC_RegDef_t;
 
 typedef struct{
 	volatile uint32_t	CSR;
-	const uint32_t 		RESERVED;
+	uint32_t 		RESERVED;
 	volatile uint32_t	CCR;
 	volatile uint32_t	CDR;
 }ADC_CCR_RegDef_t;
@@ -222,6 +222,22 @@ typedef struct {
     uint32_t RESERVED4[56];
     volatile uint8_t  IPR[240];
 } NVIC_RegDef_t;
+
+typedef struct{
+	volatile uint32_t	ISR;
+	volatile uint32_t	IFCR;
+	volatile uint32_t	CCR1;
+	volatile uint32_t	CNDTR1;
+	volatile uint32_t	CPAR1;
+	volatile uint32_t	CMAR1;
+	uint32_t 			RESERVED1;
+	volatile uint32_t	CCR2;
+	volatile uint32_t	CNDTR2;
+	volatile uint32_t	CPAR2;
+	volatile uint32_t	CMAR2;
+	uint32_t			RESERVED2;
+
+}DMA_Reg_def_t;
 /*
  *
  */
@@ -296,6 +312,8 @@ typedef struct {
 #define ADC_PCLK_DISABLE()					RCC->AHBENR &= ~(1 << 28)
 
 #define ADC_REG_RESET()						do{(RCC->AHBRSTR |= (1<<28)); (RCC->AHBRSTR &= ~(1<<28));}while(0)
+
+#define DMA1								((DMA_Reg_def_t*) DMA1_BASE_ADDR)
 
 #define ENABLE 								1
 #define DISABLE 							0
