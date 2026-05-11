@@ -201,7 +201,7 @@ void ADC_IRQHandle(ADC_Handle_t *pADCHandle){
 	temp1 = (pADCHandle->pADCx->IER & (1 << 2));
 	temp2 = (pADCHandle->pADCx->ISR & (1 << 2));
 	if(temp1 && temp2){
-		adc_rxne_interrupt_handle(pADCHandle);
+		adc_eoc_interrupt_handle(pADCHandle);
 	}
 }
 
