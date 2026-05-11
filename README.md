@@ -1,16 +1,23 @@
-**STM32 Low-Level Peripheral Driver Library**
-**Project Overview**
-This repository contains a custom Hardware Abstraction Layer (HAL) for STM32 microcontrollers, developed from the ground up using ARM Cortex-M reference manuals and device datasheets. The project serves to bypass vendor-specific libraries to gain a direct understanding of silicon-level architecture, register-mapped I/O, and hardware-software synchronization.
+# STM32 Low-Level Peripheral Driver Library
 
-**Core Architecture**
-The drivers utilize a structured design pattern to ensure deterministic execution and memory safety.
+## Project Overview
+This repository contains a custom Hardware Abstraction Layer (HAL) for STM32 microcontrollers, developed from the ground up using ARM Cortex-M reference manuals and device datasheets. 
 
-1. **Register Definition Mapping**
-Peripherals are mapped using C structures where each member corresponds to a specific hardware register address. To ensure exact alignment with the physical memory map provided in the datasheet, explicit array padding is used to account for reserved memory spaces.
+The project serves to bypass vendor-specific libraries to gain a direct understanding of:
+* Silicon-level architecture
+* Register-mapped I/O
+* Hardware-software synchronization
 
-Implementation Detail: All hardware registers are qualified as volatile to ensure the compiler fetches the actual hardware state during every access, preventing incorrect optimization during polling or interrupt execution.
+---
 
+## Core Architecture
 
+### 1. Register Definition Mapping
+Peripherals are mapped using C structures where each member corresponds to a specific hardware register address. To ensure exact alignment, explicit array padding is used to account for reserved memory spaces.
+
+**Implementation Detail:** All hardware registers are qualified as `volatile` to ensure the compiler fetches the actual hardware state during every access.
+
+```c
 typedef struct {
     volatile uint32_t CR2;
     volatile uint32_t CR3;
@@ -24,69 +31,62 @@ typedef struct {
     volatile uint32_t TDR;
 } USART_RegDef_t;
 
-2. **Stateful Handle Design**
-A "Handle" architecture is employed to support multiple instances of a peripheral. This decouples static hardware configuration (e.g., sample time, resolution) from the dynamic runtime state (e.g., active buffer pointers, transmission flags, or error codes).  
+2. Stateful Handle Design
+A "Handle" architecture is employed to support multiple instances of a peripheral. This decouples static hardware configuration from the dynamic runtime state.  
 
 
 typedef struct {
     USART_RegDef_t *pUSARTx;
     USART_Config_t  USART_Config;
     USART_Buffer_t  RxBuffer;
-    USART_Buffer_t  TxBuffer;      // Circular Buffer
-    uint8_t         TxState;       // Current State
-    uint8_t         RxState;       // Current State
+    USART_Buffer_t  TxBuffer;
+    uint8_t         TxState;
+    uint8_t         RxState;
 } USART_Handle_t;
 
-3.** Non-Blocking Interrupt Logic**
-The library prioritizes non-blocking execution through Interrupt Service Routines (ISRs). The ISRs manage data extraction and internal state transitions, notifying the application layer through event callbacks once a sequence or data transfer is finalized.
-
-**Implementation Example**
-The following snippet demonstrates the high-level API usage, showing how the drivers abstract hardware complexity while maintaining full control over the configuration.
+The following snippet demonstrates the high-level API usage for a multi-channel ADC sequence using interrupts.
 
 
-// Configure the multi-channel ADC sequence
 ADC_ConfigSequence_t mySequence[3] = {
-    {1, ADC_SMP_601_5}, // Channel 1
-    {2, ADC_SMP_601_5}, // Channel 2
-    {3, ADC_SMP_601_5}  // Channel 3
+    {1, ADC_SMP_601_5}, 
+    {2, ADC_SMP_601_5}, 
+    {3, ADC_SMP_601_5} 
 };
 
-// Initialize ADC with specific configuration
 ADC1_Handle.ADC_CONFIG.pSequence = mySequence;
 ADC1_Handle.ADC_CONFIG.SequenceLen = 3;
 ADC1_Handle.ADC_CONFIG.ADC_ConversionMode = ADC_MODE_CONT_CONVERSION;
 
 ADC_Innit(&ADC1_Handle);
 
-// Assign application buffer and start non-blocking conversion
 ADC1_Handle.pADCBuffer = SensorData;
 ADC_StartConversion(ADC1);
 ADC_RecieveDataIT(&ADC1_Handle);
 
-**Driver Implementation Status**
-**Completed Drivers**
-**GPIO**: Mode selection, pull-up/down control, and alternate functions.
+ADC1_Handle.ADC_CONFIG.pSequence = mySequence;
+ADC1_Handle.ADC_CONFIG.SequenceLen = 3;
+ADC1_Handle.ADC_CONFIG.ADC_ConversionMode = ADC_MODE_CONT_CONVERSION;
 
-**USART**: Asynchronous IT mode with circular buffer integration.
+ADC_Innit(&ADC1_Handle);
 
-**SPI**: Master mode configuration and data framing.
+ADC1_Handle.pADCBuffer = SensorData;
+ADC_StartConversion(ADC1);
+ADC_RecieveDataIT(&ADC1_Handle);
+Driver Implementation Status
+ Completed Drivers
+GPIO: Mode selection and alternate function mapping.
 
-**ADC**: Continuous mode scanning and hardware-synced interrupts.
+USART: Asynchronous IT mode with circular buffer.
 
-**Currently in Testing**
-**I2C**: Hardware state machine control and clock stretching.
+SPI: Master mode configuration and data framing.
 
-**DMA**: Memory-to-peripheral data pipelines and address routing.
+ADC: Continuous mode scanning and hardware interrupts.
 
-**Development Objectives**
-The development of this library focuses on:
+🟡 Currently in Testing
+I2C: Hardware state machine control.
 
-**Architecture Mastery**: Understanding the internal bus matrix and peripheral interconnectivity of the ARM Cortex-M architecture.
+DMA: Memory-to-peripheral data pipelines.
 
-**Bypassing Abstraction**: Eliminating vendor HAL overhead to achieve a minimal flash and RAM footprint.
-
-
-**Usage**
-1)Include the required peripheral header from the Inc/ directory.
-2)Define and initialize the peripheral configuration and handle structures.
-3)If using interrupt-based drivers, ensure the corresponding IRQ handler is linked in the vector table.
+Development Objectives
+Architecture Mastery: Understanding the internal bus matrix of the ARM Cortex-M.
+Bypassing Abstraction: Eliminating vendor HAL overhead for minimal footprint.
