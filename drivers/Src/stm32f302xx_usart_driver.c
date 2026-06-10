@@ -305,28 +305,29 @@ void USART_IRQHandle(USART_Handle_t *pUSARTHandle ){
 
 static void usart_txe_interrupt_handle(USART_Handle_t *pUSARTHandle){
 	uint8_t temp1;
-	uint8_t status = USART_Buffer_Pop( &(pUSARTHandle->TxBuffer), &temp1);
+	uint8_t status = USART_Buffer_Pop( &(pUSARTHandle->TxBuffer), &temp1); //Circular Buffer
 	if(status){
 		if(pUSARTHandle->USART_Config.USART_WordLength == USART_WL_7BIT){
-		(*((uint8_t*)&pUSARTHandle->pUSARTx->TDR)) = ((temp1) & (0x7F));
+		(*((uint8_t*)&pUSARTHandle->pUSARTx->TDR)) = ((temp1) & (0x7F)); // Accessing the FIFO
 
 		}else if(pUSARTHandle->USART_Config.USART_WordLength == USART_WL_8BIT){
 		(*((uint8_t*)&pUSARTHandle->pUSARTx->TDR)) = (temp1);
 		}
 	}else{
-		pUSARTHandle->pUSARTx->CR1 &= ~(1 << 7);
-		USART_ApplicationEventCallback(pUSARTHandle, USART_EVENT_TX_CMPLT);
+		pUSARTHandle->pUSARTx->CR1 &= ~(1 << USART_CR1_TXIEIE_BIT);
+
 	}
+	USART_ApplicationEventCallback(pUSARTHandle, USART_EVENT_TX_CMPLT);
 }
 
 static void usart_rxne_interrupt_handle(USART_Handle_t *pUSARTHandle){
 	uint8_t temp1;
 	if(pUSARTHandle->USART_Config.USART_WordLength == USART_WL_7BIT){
 			temp1= (*((uint8_t*)&pUSARTHandle->pUSARTx->RDR)& (0x7F));
-			USART_Buffer_Push(&(pUSARTHandle->RxBuffer), &temp1);
+			USART_Buffer_Push(&(pUSARTHandle->RxBuffer), &temp1); //Circular Buffer
 	}else if(pUSARTHandle->USART_Config.USART_WordLength == USART_WL_8BIT){
 		    temp1 = (*((uint8_t*)&pUSARTHandle->pUSARTx->RDR));
-		    USART_Buffer_Push(&(pUSARTHandle->RxBuffer), &temp1);
+		    USART_Buffer_Push(&(pUSARTHandle->RxBuffer), &temp1); //Circular Buffer
 	}
 }
 

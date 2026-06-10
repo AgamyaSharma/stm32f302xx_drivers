@@ -203,14 +203,14 @@ typedef struct{
 }ADC_RegDef_t;
 
 typedef struct{
-	volatile uint32_t	CSR;
+	volatile uint32_t	CSR;		//ADC CommonRegister Definition Structure
 	uint32_t 		RESERVED;
 	volatile uint32_t	CCR;
 	volatile uint32_t	CDR;
 }ADC_CCR_RegDef_t;
 
 typedef struct {
-    volatile uint32_t ISER[8];
+    volatile uint32_t ISER[8];		//NVIC Register Definition Structure
     uint32_t RESERVED0[24];
     volatile uint32_t ICER[8];
     uint32_t RESERVED1[24];
@@ -224,20 +224,20 @@ typedef struct {
 } NVIC_RegDef_t;
 
 typedef struct{
-	volatile uint32_t	ISR;
-	volatile uint32_t	IFCR;
-	volatile uint32_t	CCR1;
-	volatile uint32_t	CNDTR1;
-	volatile uint32_t	CPAR1;
-	volatile uint32_t	CMAR1;
+	volatile uint32_t	CCR;
+	volatile uint32_t	CNDTR;
+	volatile uint32_t	CPAR;
+	volatile uint32_t	CMAR;
 	uint32_t 			RESERVED1;
-	volatile uint32_t	CCR2;
-	volatile uint32_t	CNDTR2;
-	volatile uint32_t	CPAR2;
-	volatile uint32_t	CMAR2;
-	uint32_t			RESERVED2;
+}DMA_Channel_Def_t;
 
-}DMA_Reg_def_t;
+typedef struct{
+	volatile uint32_t	ISR;		// DMA Register Definition Structure
+	volatile uint32_t	IFCR;
+	DMA_Channel_Def_t   CH_REG[7];
+	uint32_t 			RESERVED1;
+
+}DMA_RegDef_t;
 /*
  *
  */
@@ -313,7 +313,7 @@ typedef struct{
 
 #define ADC_REG_RESET()						do{(RCC->AHBRSTR |= (1<<28)); (RCC->AHBRSTR &= ~(1<<28));}while(0)
 
-#define DMA1								((DMA_Reg_def_t*) DMA1_BASE_ADDR)
+#define DMA1								((DMA_RegDef_t*) DMA1_BASE_ADDR)
 
 #define ENABLE 								1
 #define DISABLE 							0

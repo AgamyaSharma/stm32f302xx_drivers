@@ -100,7 +100,7 @@ typedef struct{
 #define USART_EVENT_TX_CMPLT			1
 #define USART_EVENT_RX_CMPLT			2
 
-
+#define USART_CR1_TXIEIE_BIT			7
 
 
 
